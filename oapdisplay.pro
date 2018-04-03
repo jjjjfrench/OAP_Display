@@ -1,7 +1,8 @@
 PRO OAPdisplay
 
-  RESOLVE_ROUTINE,['oapdisplay_quit_event','OAPdisplay_getfile_event','OAPdisplay_settime_event','OAPdisplay_particle_criteria_event',$
-                   'OAPdisplay_event','OAPdisplay_get2dsbuffers_event','OAPdisplay_showbuffers','OAPdisplay_step_event']
+  RESOLVE_ROUTINE,['oapdisplay_quit_event','OAPdisplay_getfile_event','OAPdisplay_settime_event','OAPdisplay_event',$
+                   'OAPdisplay_get2ds_buffers_event','OAPdisplay_showbuffers','OAPdisplay_step_event']
+  RESOLVE_ROUTINE,'OAPdisplay_particle_criteria_event',/IS_FUNCTION
 
   common block1, fileinfo, display_info, prbtype, hhmmss, pos, scnt, rec, diam, nth, hab, hab_selection, auto_reject
 
