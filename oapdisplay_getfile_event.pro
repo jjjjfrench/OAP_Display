@@ -38,7 +38,7 @@ PRO OAPdisplay_getfile_event,ev
   WIDGET_CONTROL,set_value=display_info.path,path_widg_id
   display_info.fname_proc = STRMID(fname_p,STRLEN(display_info.path))
   WIDGET_CONTROL,set_value=display_info.fname_proc,fproc_widg_id
-  
+
   ;using the filename -- check and set the probe type
   IF (STRPOS(fname_p, '2DS') GE 0) THEN BEGIN
     prbtype = '2DS'
@@ -85,6 +85,8 @@ PRO OAPdisplay_getfile_event,ev
   WIDGET_CONTROL, set_value =stop_time, stp_widg_id, Editable=1
   minD_widg_id = WIDGET_INFO(ev.top,find_by_uname='minD_widg')
   WIDGET_CONTROL, minD_widg_id, Editable=1
+  maxD_widg_id = WIDGET_INFO(ev.top,find_by_uname='maxD_widg')
+  WIDGET_CONTROL, maxD_widg_id, Editable=1
   nth_part_widg_id = WIDGET_INFO(ev.top,find_by_uname='nth_part_widg')
   WIDGET_CONTROL, nth_part_widg_id, Editable=1
 

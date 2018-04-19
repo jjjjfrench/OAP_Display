@@ -11,7 +11,13 @@ FUNCTION OAPdisplay_particle_criteria_event, ev
       WIDGET_CONTROL, get_value=tmp, ev.id
       IF (LONG(tmp) LT 0) THEN tmp = STRTRIM( STRING(0),2)
       IF (LONG(tmp) GT 1200) THEN tmp = STRTRIM( STRING(1200),2)
-      WIDGET_CONTROL, set_value=tmp, ev.id 
+      WIDGET_CONTROL, set_value=tmp, ev.id
+    END
+    (ev.ID EQ (WIDGET_INFO(ev.top,find_by_uname='maxD_widg')) ) : BEGIN
+      WIDGET_CONTROL, get_value=tmp, ev.id
+      IF (LONG(tmp) LT 1) THEN tmp = STRTRIM( STRING(1),2)
+      IF (LONG(tmp) GT 5000) THEN tmp = STRTRIM( STRING(5000),2)
+      WIDGET_CONTROL, set_value=tmp, ev.id
     END
     (ev.ID EQ (WIDGET_INFO(ev.top,find_by_uname='nth_part_widg')) ) : BEGIN
       WIDGET_CONTROL, get_value=tmp, ev.id
@@ -19,7 +25,7 @@ FUNCTION OAPdisplay_particle_criteria_event, ev
       IF (LONG(tmp) GT 1000) THEN tmp = STRTRIM(STRING(1000),2)
       WIDGET_CONTROL, set_value=tmp, ev.id
     END
-     
+
   ENDCASE
 
 

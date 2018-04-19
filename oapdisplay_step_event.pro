@@ -13,7 +13,12 @@ PRO OAPdisplay_step_event,ev
   ;get the minimum diameter to consider
   minD_widg_id =  WIDGET_INFO(ev.top,find_by_uname='minD_widg')
   WIDGET_CONTROL, get_value=tmp, minD_widg_id
-  minD = LONG((tmp)[0]) / 1000. ;; change minD to mm
+  minD = LONG((tmp)[0]) / 1000. ; change minD to mm
+
+  ;get the maximum diameter to consider
+  maxD_widg_id =  WIDGET_INFO(ev.top,find_by_uname='maxD_widg')
+  WIDGET_CONTROL, get_value=tmp, maxD_widg_id
+  maxD = LONG((tmp)[0]) / 1000. ; change maxD to mm
 
   ; get the nth particle to show
   nth_part_widg_id = WIDGET_INFO(ev.top,find_by_uname='nth_part_widg')
@@ -48,7 +53,7 @@ PRO OAPdisplay_step_event,ev
 
 
   ;currently only setup to get 2DS data -- when we add CIP data, we will need to add a CASE statement here
-  OAPdisplay_get2DS_buffers, tmp, minD, inds, npart, hab_sel, first, last, direction
+  OAPdisplay_get2DS_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, last, direction
 
   OAPdisplay_showbuffers, tmp, prbtype
 
@@ -61,6 +66,12 @@ PRO OAPdisplay_step_event,ev
   ImageMIND_id = WIDGET_INFO(ev.top,find_by_uname='imgMIND')
   display_info.img_mind = 'Image MinD: '+STRTRIM(STRING(LONG(minD*1000)),2)
   WIDGET_CONTROL, set_value=display_info.img_minD, ImageMIND_id
+  ImageMAXD_id = WIDGET_INFO(ev.top,find_by_uname='imgMAXD')
+  display_info.img_maxd = 'Image MaxD: '+STRTRIM(STRING(LONG(maxD*1000)),2)
+  WIDGET_CONTROL, set_value=display_info.img_maxD, ImageMAXD_id
+  ImageNTH_id = WIDGET_INFO(ev.top,find_by_uname='imgNTH')
+  display_info.img_nth = 'Image Nth: '+STRTRIM(STRING(LONG(nth)),2)
+  WIDGET_CONTROL, set_value=display_info.img_nth, ImageNTH_id
 
 
   ;  IF (last LT inds[npart-1]) THEN BEGIN
