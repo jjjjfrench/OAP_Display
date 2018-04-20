@@ -57,7 +57,7 @@ PRO OAPdisplay
   hab_button_names=['Zero','Tiny','Linear','Center-Out','Oriented','Aggregate','Graupel',$
     'Sphere','Hexagonal','Irregular','Dendrite']
   hab_widg_id=CW_BGROUP(base_widg,hab_button_names,Column=3,/NonExclusive,LABEL_TOP='Habit',$
-    xoff=552,/FRAME,ysize=105,uname='hab_widg', event_funct='OAPdisplay_particle_criteria_event',set_value=[0,0,1,1,1,1,1,1,1,1,1])
+    xoff=552,/FRAME,ysize=105,uname='hab_widg', event_funct='OAPdisplay_particle_criteria_event',set_value=[1,1,1,1,1,1,1,1,1,1,1])
 
   Display_button_id=WIDGET_BUTTON(base_widg,value='Display Particles',event_pro='OAPdisplay_event',$
     xsize=110,ysize=60,xoffset=980,yoffset=10, sensitive=0, uname='Display_button')
@@ -80,7 +80,7 @@ PRO OAPdisplay
     uname='imgSTP')
   ImageMIND_id=WIDGET_LABEL(base_widg,value=display_info.img_minD,xsize=120,ysize=15,xoff=470,yoff=560, /ALIGN_LEFT,$
     uname='imgMIND')
-  ImageMAXD_id=WIDGET_LABEL(base_widg,value=display_info.img_maxD,xsize=110,ysize=15,xoff=585,yoff=560, /ALIGN_LEFT,$
+  ImageMAXD_id=WIDGET_LABEL(base_widg,value=display_info.img_maxD,xsize=110,ysize=15,xoff=590,yoff=560, /ALIGN_LEFT,$
     uname='imgMAXD')
   Fwd_button_id=WIDGET_BUTTON(base_widg,value='Step Forward',event_pro='OAPdisplay_step_event',$
     xsize=110,ysize=30,xoffset=850,yoffset=550, sensitive=0, uname='stepfwd_button')
