@@ -23,13 +23,25 @@ PRO OAPdisplay_event,ev
     RETURN
   ENDIF
 
-  ;get the minimum diameter to consider
+  ;get the minimum and maximum diameter to consider
   minD_widg_id =  WIDGET_INFO(ev.top,find_by_uname='minD_widg')
   WIDGET_CONTROL, get_value=tmp, minD_widg_id
   IF (LONG(tmp) LT 0) THEN tmp = STRTRIM( STRING(0),2)
   IF (LONG(tmp) GT 1200) THEN tmp = STRTRIM( STRING(1200),2)
   WIDGET_CONTROL, set_value=tmp, minD_widg_id
-  minD = LONG((tmp)[0]) / 1000. ;; change minD to mm
+  minD = LONG((tmp)[0]) / 1000. ; change minD to mm
+  maxD_widg_id =  WIDGET_INFO(ev.top,find_by_uname='maxD_widg')
+  WIDGET_CONTROL, get_value=tmp, maxD_widg_id
+  IF (LONG(tmp) LT 1) THEN tmp = STRTRIM( STRING(1),2)
+  IF (LONG(tmp) GT 5000) THEN tmp = STRTRIM( STRING(5000),2)
+  WIDGET_CONTROL, set_value=tmp, maxD_widg_id
+  maxD = LONG((tmp)[0]) / 1000. ; change maxD to mm
+  IF maxD LE minD Then Begin
+    Error_message= 'Maximum diameter must be greater than minimum diameter'
+    plot_widg_id =  WIDGET_INFO(ev.top,find_by_uname='plot_widg')
+    res2 = DIALOG_MESSAGE(Error_message, /ERROR, DIALOG_PARENT=plot_widg_id)
+    Return
+  ENDIF
 
   ;get the nth particle to display
   nth_part_widg_id = WIDGET_INFO(ev.top,find_by_uname='nth_part_widg')
@@ -38,11 +50,11 @@ PRO OAPdisplay_event,ev
   IF (LONG(tmp) GT 1000)THEN tmp=STRTRIM(STRING(1000),2)
   WIDGET_CONTROL, set_value=tmp, nth_part_widg_id
   nth = LONG((tmp)[0])
-  
+
   ;get the habits to plot
   hab_widg_id = WIDGET_INFO(ev.top,find_by_uname='hab_widg')
   WIDGET_CONTROL, get_value=hab_sel, hab_widg_id
-  
+
 
   ;determine the indices of the particles within the timerange requested and number of particles
   inds = WHERE( (hhmmss GE stt_hhmmss) AND (hhmmss LE stp_hhmmss))
@@ -55,12 +67,12 @@ PRO OAPdisplay_event,ev
 
   ;the next procedure gets the data and fills four display buffers
   ;currently only setup to get 2DS data -- when we add CIP data, we will need to add a CASE statement here
-  OAPdisplay_get2DS_buffers, tmp, minD, inds, npart, hab_sel, first, last
+  OAPdisplay_get2DS_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, last
 
   ;the next procedure unpacks the data in the display buffers and draws the display
   OAPdisplay_showbuffers, tmp, prbtype
 
-  ;write information about the images displayed (start & end times, minimum diameter shown)
+  ;write information about the images displayed (start & end times, minimum & maximum diameter shown)
   ImageSTT_id = WIDGET_INFO(ev.top,find_by_uname='imgSTT')
   display_info.img_stt = 'Image Start: '+STRTRIM(STRING(hhmmss[first]),2)
   WIDGET_CONTROL, set_value=display_info.img_stt, ImageSTT_id
@@ -70,6 +82,10 @@ PRO OAPdisplay_event,ev
   ImageMIND_id = WIDGET_INFO(ev.top,find_by_uname='imgMIND')
   display_info.img_mind = 'Image MinD: '+STRTRIM(STRING(LONG(minD*1000)),2)
   WIDGET_CONTROL, set_value=display_info.img_minD, ImageMIND_id
+  ImageMAXD_id = WIDGET_INFO(ev.top,find_by_uname='imgMAXD')
+  display_info.img_maxd = 'Image MaxD: '+STRTRIM(STRING(LONG(maxD*1000)),2)
+  WIDGET_CONTROL, set_value=display_info.img_maxD, ImageMAXD_id
+
 
   ;if the last particle shown is not at the end of the requested time period,
   ;  then turn the stepforward button on
