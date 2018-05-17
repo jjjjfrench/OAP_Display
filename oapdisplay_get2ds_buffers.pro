@@ -12,11 +12,14 @@ PRO OAPdisplay_get2DS_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, las
   ;Loop over all particles -- first and last are provided and currently represent the first
   ;  and last *possible* particle to be displayed based on start and end times and what is
   ;  being currently displayed (if anything)
+  x=(0L)
+  y=(0L)
   FOR i = first, last DO BEGIN
+    IF (scnt[i] LT 1) THEN CONTINUE           ;particle has no slice count, skip it
     IF (auto_reject[i] GT 50) THEN CONTINUE   ;auto reject of 48 is accepted, all others are rejected
+    x=x+1
     IF (diam[i] LT minD) THEN CONTINUE        ;particle is too small, skip it
     IF (diam[i] GT maxD) THEN CONTINUE        ;particle is too large, skip it
-    IF (scnt[i] LT 1) THEN CONTINUE           ;particle has no slice count, skip it
     IF (i mod nth NE 0) THEN CONTINUE         ;if particle index not multiple of nth value, skip it
     bad_habit=1                          ;CHECK IF PARTICLE PARTICLE HABIT IS SELECTED TO DISPLAY
     CASE HAB[I] OF                       ; if hab_sel is set to display then 'BAD_HABIT' is 0 (False) and we keep the particle
@@ -35,9 +38,12 @@ PRO OAPdisplay_get2DS_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, las
     IF (BAD_HABIT) THEN CONTINUE
 
     ;IF WE MAKE IT HERE THE PARTICLE IS GOOD TO DISPLAY
+    y=y+1
     tot_slice = tot_slice+scnt[i]        ;particle is accepted add slices to the buffer
+    ;;;;;;;
     IF (stt[tot_buf] EQ -1) THEN stt[tot_buf] = i   ;if this is the first particle in buffer, set stt
     stp[tot_buf] = i                     ;assume it is last particle in buffer (this will get overwritten on next iteration if it is not)
+    ;;;;;;
     ;If we have more than 1700 slices, are buffer is full
     IF (TOT_SLICE GT 1700) THEN BEGIN
       stp[tot_buf]=i-1
@@ -53,6 +59,10 @@ PRO OAPdisplay_get2DS_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, las
       ENDELSE
     ENDIF
   ENDFOR
+  fraction= FLOAT(y)/FLOAT(x)*100
+  percentage=STRING(fraction, format='(D6.2)')
+  
+  
 
   ;set the indices for first and last particle in our buffers
   first = stt[0]
@@ -67,10 +77,10 @@ PRO OAPdisplay_get2DS_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, las
   FOR k= 0, TOT_BUF DO BEGIN
     arr_pos = 0
     FOR i = stt[k], stp[k] DO BEGIN
+      IF (scnt[i] LT 1) THEN CONTINUE
       IF (auto_reject[i] GT 50) THEN CONTINUE  ;auto reject of 48 is accepted, all others are rejected
       IF (diam[i] LT minD) THEN CONTINUE
       IF (diam[i] GT maxD) THEN CONTINUE
-      IF (scnt[i] LT 1) THEN CONTINUE
       IF (i mod nth NE 0) THEN CONTINUE
       bad_habit=1                          ;CHECK IF PARTICLE PARTICLE HABIT IS SELECTED TO DISPLAY
       CASE HAB[I] OF                       ; if hab_sel is set to display then 'BAD_HABIT' is 0 (False) and we keep the particle

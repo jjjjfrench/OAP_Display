@@ -30,10 +30,11 @@ PRO OAPdisplay_event,ev
   IF (LONG(tmp) GT 1200) THEN tmp = STRTRIM( STRING(1200),2)
   WIDGET_CONTROL, set_value=tmp, minD_widg_id
   minD = LONG((tmp)[0]) / 1000. ; change minD to mm
+  
   maxD_widg_id =  WIDGET_INFO(ev.top,find_by_uname='maxD_widg')
   WIDGET_CONTROL, get_value=tmp, maxD_widg_id
   IF (LONG(tmp) LT 1) THEN tmp = STRTRIM( STRING(1),2)
-  IF (LONG(tmp) GT 5000) THEN tmp = STRTRIM( STRING(5000),2)
+  IF (LONG(tmp) GT 2000) THEN tmp = STRTRIM( STRING(2000),2)
   WIDGET_CONTROL, set_value=tmp, maxD_widg_id
   maxD = LONG((tmp)[0]) / 1000. ; change maxD to mm
   IF maxD LE minD Then Begin
@@ -73,6 +74,9 @@ PRO OAPdisplay_event,ev
   OAPdisplay_showbuffers, tmp, prbtype
 
   ;write information about the images displayed (start & end times, minimum & maximum diameter shown)
+  ImageInfo_id = WIDGET_INFO(ev.top,find_by_uname='Percent')
+  display_info.image_percent = '% of accepted particles shown: '+STRTRIM(STRING(percentage),2) + '%'
+  WIDGET_CONTROL, set_value=display_info.image_percent, ImageINFO_id
   ImageSTT_id = WIDGET_INFO(ev.top,find_by_uname='imgSTT')
   display_info.img_stt = 'Image Start: '+STRTRIM(STRING(hhmmss[first]),2)
   WIDGET_CONTROL, set_value=display_info.img_stt, ImageSTT_id
