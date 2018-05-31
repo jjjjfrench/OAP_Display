@@ -12,12 +12,16 @@ PRO OAPdisplay_get2DS_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, las
   ;Loop over all particles -- first and last are provided and currently represent the first
   ;  and last *possible* particle to be displayed based on start and end times and what is
   ;  being currently displayed (if anything)
-  x=(0L)
-  y=(0L)
+  time_disp= LONARR(4,1700)-999
+  pos_disp = LONARR(4,1700)-999
+  part_cnt = 0L
+  tot_parts=(0L)
+  disp_parts=(0L)
+  
   FOR i = first, last DO BEGIN
     IF (scnt[i] LT 1) THEN CONTINUE           ;particle has no slice count, skip it
     IF (auto_reject[i] GT 50) THEN CONTINUE   ;auto reject of 48 is accepted, all others are rejected
-    x=x+1
+    tot_parts=tot_parts+1
     IF (diam[i] LT minD) THEN CONTINUE        ;particle is too small, skip it
     IF (diam[i] GT maxD) THEN CONTINUE        ;particle is too large, skip it
     IF (i mod nth NE 0) THEN CONTINUE         ;if particle index not multiple of nth value, skip it
@@ -38,19 +42,27 @@ PRO OAPdisplay_get2DS_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, las
     IF (BAD_HABIT) THEN CONTINUE
 
     ;IF WE MAKE IT HERE THE PARTICLE IS GOOD TO DISPLAY
-    y=y+1
+    disp_parts=disp_parts+1
+    time_disp[TOT_BUF, part_cnt] = hhmmss[i]
+    pos_disp[TOT_BUF, part_cnt] = tot_slice
     tot_slice = tot_slice+scnt[i]        ;particle is accepted add slices to the buffer
+    part_cnt=part_cnt+1
     ;;;;;;;
     IF (stt[tot_buf] EQ -1) THEN stt[tot_buf] = i   ;if this is the first particle in buffer, set stt
     stp[tot_buf] = i                     ;assume it is last particle in buffer (this will get overwritten on next iteration if it is not)
-    ;;;;;;
+    ;;;;;;;
     ;If we have more than 1700 slices, are buffer is full
     IF (TOT_SLICE GT 1700) THEN BEGIN
       stp[tot_buf]=i-1
+      time_disp[TOT_BUF, part_cnt] = -999
+      pos_disp[TOT_BUF, part_cnt] = -999     
       ;If we are on our fourth buffer (#3) we are out of buffers
       IF (TOT_BUF LT 3) THEN BEGIN
         tot_buf = tot_buf+1              ;We still have buffers left, increment by one
         tot_slice = 0                    ;reset slices
+        part_cnt = 0
+        time_disp[TOT_BUF, part_cnt] = hhmmss[i]
+        pos_disp[TOT_BUF, part_cnt] = tot_slice
         i=i-1                            ;set particle back by one
         CONTINUE                         ;go back to start of loop
       ENDIF ELSE BEGIN
@@ -59,7 +71,7 @@ PRO OAPdisplay_get2DS_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, las
       ENDELSE
     ENDIF
   ENDFOR
-  fraction= FLOAT(y)/FLOAT(x)*100
+  fraction= FLOAT(disp_parts)/FLOAT(tot_parts)*100
   percentage=STRING(fraction, format='(D6.2)')
   
   
@@ -69,7 +81,7 @@ PRO OAPdisplay_get2DS_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, las
   IF (stp[3] NE -1) THEN last=stp[3] ELSE last=i
   ;Determine how many data records to retrieve
   rec_cnt = rec[last]-rec[first]+1
-
+  
   ;get the data and put the good particles in the display buffers
   varid = NCDF_VARID(fileinfo.ncid_base, 'data')
   NCDF_VARGET, fileinfo.ncid_base, varid, tmp_data, OFFSET=[0,0,rec[first]],COUNT=[8,1700,rec_cnt]
@@ -102,7 +114,6 @@ PRO OAPdisplay_get2DS_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, las
       arr_pos = arr_pos+scnt[i]
     ENDFOR
   ENDFOR
-
-
-
+  
+  
 END

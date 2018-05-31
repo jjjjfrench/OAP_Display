@@ -78,7 +78,8 @@ PRO OAPdisplay_getfile_event,ev
   display_info.range_time = start_time + ' -- ' + stop_time
   timerange_widg_id = WIDGET_INFO(ev.top,find_by_uname='timerange_widg')
   WIDGET_CONTROL, set_value =display_info.range_time, timerange_widg_id
-
+  
+  
   stt_widg_id = WIDGET_INFO(ev.top,find_by_uname='stt_widg')
   WIDGET_CONTROL, set_value =start_time, stt_widg_id, Editable=1
   stp_widg_id = WIDGET_INFO(ev.top,find_by_uname='stp_widg')

@@ -1,6 +1,10 @@
 PRO OAPdisplay_step_event,ev
 
   common block1
+  
+  plot_widg_id=WIDGET_INFO(ev.top,find_by_uname='plot_widg')
+  WIDGET_CONTROL, plot_widg_id, GET_VALUE=graphicWin
+  graphicWin.erase
 
   ;get the user-set start time and the end times to show
   stt_widg_id =  WIDGET_INFO(ev.top,find_by_uname='stt_widg')
@@ -55,7 +59,7 @@ PRO OAPdisplay_step_event,ev
   ;currently only setup to get 2DS data -- when we add CIP data, we will need to add a CASE statement here
   OAPdisplay_get2DS_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, last, direction
 
-  OAPdisplay_showbuffers, tmp, prbtype
+  OAPdisplay_showbuffers, tmp
 
   ImageSTT_id = WIDGET_INFO(ev.top,find_by_uname='imgSTT')
   display_info.img_stt = 'Image Start: '+STRTRIM(STRING(hhmmss[first]),2)
@@ -71,7 +75,7 @@ PRO OAPdisplay_step_event,ev
   WIDGET_CONTROL, set_value=display_info.img_maxD, ImageMAXD_id
   ImageNTH_id = WIDGET_INFO(ev.top,find_by_uname='imgNTH')
   display_info.img_nth = 'Image Nth: '+STRTRIM(STRING(LONG(nth)),2)
-  WIDGET_CONTROL, set_value=display_info.img_nth, ImageNTH_id
+  WIDGET_CONTROL, set_value=display_info.img_nth, nth_part_widg_id
 
 
   ;  IF (last LT inds[npart-1]) THEN BEGIN

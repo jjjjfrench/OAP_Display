@@ -2,6 +2,9 @@ PRO OAPdisplay_event,ev
 
   common block1
 
+  plot_widg_id=WIDGET_INFO(ev.top,find_by_uname='plot_widg')
+  WIDGET_CONTROL, plot_widg_id, GET_VALUE=graphicWin
+  graphicWin.erase
 
   ;get the user-set start time and the end times to show
   stt_widg_id =  WIDGET_INFO(ev.top,find_by_uname='stt_widg')
@@ -55,6 +58,10 @@ PRO OAPdisplay_event,ev
   ;get the habits to plot
   hab_widg_id = WIDGET_INFO(ev.top,find_by_uname='hab_widg')
   WIDGET_CONTROL, get_value=hab_sel, hab_widg_id
+  
+  ;checks to see if timestamps are selected to display
+  Timestamp_widg_id = WIDGET_INFO(ev.top,find_by_uname='timestamp_widg')
+  WIDGET_CONTROL, get_value=timestamp_sel, Timestamp_widg_id
 
 
   ;determine the indices of the particles within the timerange requested and number of particles
@@ -71,9 +78,12 @@ PRO OAPdisplay_event,ev
   OAPdisplay_get2DS_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, last
 
   ;the next procedure unpacks the data in the display buffers and draws the display
-  OAPdisplay_showbuffers, tmp, prbtype
+  OAPdisplay_showbuffers, tmp     ; Had to remove ', prbtype' in order to make timestamps work
 
   ;write information about the images displayed (start & end times, minimum & maximum diameter shown)
+  ;ImageTimestamp_id=WIDGET_INFO
+  
+  
   ImageInfo_id = WIDGET_INFO(ev.top,find_by_uname='Percent')
   display_info.image_percent = '% of accepted particles shown: '+STRTRIM(STRING(percentage),2) + '%'
   WIDGET_CONTROL, set_value=display_info.image_percent, ImageINFO_id
@@ -89,7 +99,7 @@ PRO OAPdisplay_event,ev
   ImageMAXD_id = WIDGET_INFO(ev.top,find_by_uname='imgMAXD')
   display_info.img_maxd = 'Image MaxD: '+STRTRIM(STRING(LONG(maxD*1000)),2)
   WIDGET_CONTROL, set_value=display_info.img_maxD, ImageMAXD_id
-
+  
 
   ;if the last particle shown is not at the end of the requested time period,
   ;  then turn the stepforward button on
@@ -116,6 +126,7 @@ PRO OAPdisplay_event,ev
   display_info.last = last
 
   hab_selection=!Null  ; reset habit selection for next run
-
+  
+  
   RETURN
 END

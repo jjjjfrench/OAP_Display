@@ -1,4 +1,4 @@
-FUNCTION OAPdisplay_particle_criteria_event, ev
+FUNCTION OAPdisplay_particle_criteria_event,ev
 
   common block1
 
@@ -25,6 +25,14 @@ FUNCTION OAPdisplay_particle_criteria_event, ev
       IF (LONG(tmp) GT 1000) THEN tmp = STRTRIM(STRING(1000),2)
       WIDGET_CONTROL, set_value=tmp, ev.id
     END
+    (ev.ID EQ (WIDGET_INFO(ev.top,find_by_uname='timestamp_widg')) ) : BEGIN
+      WIDGET_CONTROL, get_value=tmp, ev.id
+      timestamp_selection=tmp
+    END
+    (ev.ID EQ (WIDGET_INFO(ev.top,find_by_uname='save_widg')) ) : BEGIN
+      WIDGET_CONTROL, get_value=tmp, ev.id
+      save_selection=tmp
+    END
 
   ENDCASE
 
@@ -35,5 +43,5 @@ FUNCTION OAPdisplay_particle_criteria_event, ev
   WIDGET_CONTROL, Fwd_button_id, sensitive=0
   Back_button_id = WIDGET_INFO(ev.top,find_by_uname='stepback_button')
   WIDGET_CONTROL, Back_button_id, sensitive=0
-
+  
 END

@@ -24,5 +24,5 @@ PRO OAPdisplay_settime_event,ev
   WIDGET_CONTROL, Fwd_button_id, sensitive=0
   Back_button_id = WIDGET_INFO(ev.top,find_by_uname='stepback_button')
   WIDGET_CONTROL, Back_button_id, sensitive=0
-
+ 
 END
