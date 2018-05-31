@@ -20,7 +20,7 @@ PRO OAPdisplay_get2DS_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, las
   
   FOR i = first, last DO BEGIN
     IF (scnt[i] LT 1) THEN CONTINUE           ;particle has no slice count, skip it
-    IF (touching_edge[i] GT 1) THEN CONTINUE ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    IF (touching_edge[i] GT 1) THEN CONTINUE  ;image cannot be touching the edge
     IF (auto_reject[i] GT 50) THEN CONTINUE   ;auto reject of 48 is accepted, all others are rejected
     tot_parts=tot_parts+1
     IF (diam[i] LT minD) THEN CONTINUE        ;particle is too small, skip it
