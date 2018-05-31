@@ -4,7 +4,7 @@ PRO OAPdisplay
     'OAPdisplay_get2ds_buffers','OAPdisplay_showbuffers','OAPdisplay_step_event','OAPdisplay_save_image']
   RESOLVE_ROUTINE,'oapdisplay_particle_criteria_event',/IS_FUNCTION
 
-  common block1, fileinfo, display_info, prbtype, hhmmss, pos, scnt, rec, diam, percentage, nth, hab, hab_selection, timestamp_selection, timestamp_sel, i, auto_reject, time_disp, pos_disp
+  common block1, fileinfo, display_info, prbtype, hhmmss, pos, scnt, rec, diam, percentage, nth, hab, hab_selection, timestamp_selection, timestamp_sel, i, auto_reject, touching_edge, time_disp, pos_disp
 
   fileinfo = {ncid_base:-999L, ncid_proc:-999L, nparts: 0L, data_varid:0L }
 

@@ -69,6 +69,8 @@ PRO OAPdisplay_getfile_event,ev
   hab=double(hab)
   varid = NCDF_VARID(fileinfo.ncid_proc, 'image_auto_reject')
   NCDF_VARGET, fileinfo.ncid_proc, varid, auto_reject
+  varid = NCDF_VARID(fileinfo.ncid_proc, 'image_touching_edge')
+  NCDF_VARGET, fileinfo.ncid_proc, varid, touching_edge
 
 
 
