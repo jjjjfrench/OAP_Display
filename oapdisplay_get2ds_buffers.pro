@@ -1,6 +1,9 @@
 PRO OAPdisplay_get2DS_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, last, direction
 
   common block1
+  
+  color=0L
+  y_location= FLOAT(0)
 
   ;Initialize pertinent variables
   display_info.buf_full = 0  ;display buffers are not all full
@@ -12,12 +15,17 @@ PRO OAPdisplay_get2DS_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, las
   ;Loop over all particles -- first and last are provided and currently represent the first
   ;  and last *possible* particle to be displayed based on start and end times and what is
   ;  being currently displayed (if anything)
-  x=(0L)
-  y=(0L)
+  time_disp= LONARR(4,1700)-999
+  pos_disp = LONARR(4,1700)-999
+  part_cnt = 0L
+  tot_parts=(0L)
+  disp_parts=(0L)
+  
   FOR i = first, last DO BEGIN
     IF (scnt[i] LT 1) THEN CONTINUE           ;particle has no slice count, skip it
+    IF (touching_edge[i] GT 1) THEN CONTINUE  ;image cannot be touching the edge
     IF (auto_reject[i] GT 50) THEN CONTINUE   ;auto reject of 48 is accepted, all others are rejected
-    x=x+1
+    tot_parts=tot_parts+1
     IF (diam[i] LT minD) THEN CONTINUE        ;particle is too small, skip it
     IF (diam[i] GT maxD) THEN CONTINUE        ;particle is too large, skip it
     IF (i mod nth NE 0) THEN CONTINUE         ;if particle index not multiple of nth value, skip it
@@ -38,19 +46,75 @@ PRO OAPdisplay_get2DS_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, las
     IF (BAD_HABIT) THEN CONTINUE
 
     ;IF WE MAKE IT HERE THE PARTICLE IS GOOD TO DISPLAY
-    y=y+1
+    bad_hab_colors=0                                          ; Checks to see if timestamps have been selected to display
+    IF (hab_color_option[[hab_colors_widg_id]] EQ 'Habit Colors On') THEN bad_hab_colors=1
+    IF (bad_hab_colors) THEN BEGIN
+    
+    CASE HAB[I] OF                       ; if hab_sel is set to display then 'BAD_HABIT' is 0 (False) and we keep the particle
+      77  : colors=10        ;Zero Image 'M'
+      116 : colors=0       ;Tiny Image 't'
+      108 : colors=1        ;Linear Image 'l'
+      67  : colors=2         ;Center-out Image 'C'
+      111 : colors=3      ;Oriented Image 'o'
+      97  : colors=4      ;Aggregate Image 'a'
+      103 : colors=5     ;Graupel Image 'g'
+      115 : colors=6        ;Sphere Image 's'
+      104 : colors=7        ;Hexagonal Image 'h'
+      105 : colors=8      ;Irregular Image 'i'
+      100 : colors=9        ;Dendrite Image 'd'
+    ENDCASE
+    
+    IF (colors NE 0 ) THEN BEGIN
+      CASE colors OF
+        1: wyo1= 'lime'
+        2: wyo1= 'red'
+        3: wyo1= 'yellow'
+        4: wyo1= 'purple'
+        5: wyo1= 'magenta'
+        6: wyo1= 'blue'
+        7: wyo1= 'teal'
+        8: wyo1= 'orange'
+        9: wyo1= 'cyan'
+      ENDCASE
+      wyo= tot_slice
+      wyo2= tot_slice + scnt[i]
+      irregular_location = Float(wyo)/1700l
+      irregular_location2 = Float(wyo2)/1700l
+      CASE TOT_BUF OF
+        0: y_location= 0.80
+        1: y_location= 0.55
+        2: y_location= 0.30
+        3: y_location= 0.08
+      ENDCASE
+      wyo_test=POLYLINE([irregular_location, irregular_location2],[y_location, y_location-0.00000000000000000001], COLOR= wyo1, THICK=6, TRANSPARENCY=55)
+    ENDIF
+    ENDIF
+
+    
+    disp_parts=disp_parts+1
+    ;IF (part_cnt GT 1699) THEN STOP
+    time_disp[TOT_BUF, part_cnt] = hhmmss[i]
+    pos_disp[TOT_BUF, part_cnt] = tot_slice
     tot_slice = tot_slice+scnt[i]        ;particle is accepted add slices to the buffer
+    part_cnt=part_cnt+1
+    
+   
     ;;;;;;;
     IF (stt[tot_buf] EQ -1) THEN stt[tot_buf] = i   ;if this is the first particle in buffer, set stt
     stp[tot_buf] = i                     ;assume it is last particle in buffer (this will get overwritten on next iteration if it is not)
-    ;;;;;;
+    ;;;;;;;
     ;If we have more than 1700 slices, are buffer is full
-    IF (TOT_SLICE GT 1700) THEN BEGIN
+    IF (TOT_SLICE GE 1700) THEN BEGIN
       stp[tot_buf]=i-1
+      time_disp[TOT_BUF, part_cnt] = -999
+      pos_disp[TOT_BUF, part_cnt] = -999     
       ;If we are on our fourth buffer (#3) we are out of buffers
       IF (TOT_BUF LT 3) THEN BEGIN
         tot_buf = tot_buf+1              ;We still have buffers left, increment by one
         tot_slice = 0                    ;reset slices
+        part_cnt = 0
+        time_disp[TOT_BUF, part_cnt] = hhmmss[i]
+        pos_disp[TOT_BUF, part_cnt] = tot_slice
         i=i-1                            ;set particle back by one
         CONTINUE                         ;go back to start of loop
       ENDIF ELSE BEGIN
@@ -59,7 +123,7 @@ PRO OAPdisplay_get2DS_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, las
       ENDELSE
     ENDIF
   ENDFOR
-  fraction= FLOAT(y)/FLOAT(x)*100
+  fraction= FLOAT(disp_parts)/FLOAT(tot_parts)*100
   percentage=STRING(fraction, format='(D6.2)')
   
   
@@ -68,8 +132,8 @@ PRO OAPdisplay_get2DS_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, las
   first = stt[0]
   IF (stp[3] NE -1) THEN last=stp[3] ELSE last=i
   ;Determine how many data records to retrieve
-  rec_cnt = rec[last]-rec[first]+1
-
+  rec_cnt = rec[[last]]-rec[[first]]+1
+  
   ;get the data and put the good particles in the display buffers
   varid = NCDF_VARID(fileinfo.ncid_base, 'data')
   NCDF_VARGET, fileinfo.ncid_base, varid, tmp_data, OFFSET=[0,0,rec[first]],COUNT=[8,1700,rec_cnt]
@@ -78,6 +142,7 @@ PRO OAPdisplay_get2DS_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, las
     arr_pos = 0
     FOR i = stt[k], stp[k] DO BEGIN
       IF (scnt[i] LT 1) THEN CONTINUE
+      IF (touching_edge[i] GT 1) THEN CONTINUE
       IF (auto_reject[i] GT 50) THEN CONTINUE  ;auto reject of 48 is accepted, all others are rejected
       IF (diam[i] LT minD) THEN CONTINUE
       IF (diam[i] GT maxD) THEN CONTINUE
@@ -102,7 +167,6 @@ PRO OAPdisplay_get2DS_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, las
       arr_pos = arr_pos+scnt[i]
     ENDFOR
   ENDFOR
-
-
-
+  
+  
 END
