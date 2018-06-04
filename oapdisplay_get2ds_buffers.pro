@@ -1,6 +1,9 @@
 PRO OAPdisplay_get2DS_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, last, direction
 
   common block1
+  
+  color=0L
+  y_location= FLOAT(0)
 
   ;Initialize pertinent variables
   display_info.buf_full = 0  ;display buffers are not all full
@@ -43,17 +46,65 @@ PRO OAPdisplay_get2DS_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, las
     IF (BAD_HABIT) THEN CONTINUE
 
     ;IF WE MAKE IT HERE THE PARTICLE IS GOOD TO DISPLAY
+    bad_hab_colors=0                                          ; Checks to see if timestamps have been selected to display
+    IF (hab_color_option[[hab_colors_widg_id]] EQ 'Habit Colors On') THEN bad_hab_colors=1
+    IF (bad_hab_colors) THEN BEGIN
+    
+    CASE HAB[I] OF                       ; if hab_sel is set to display then 'BAD_HABIT' is 0 (False) and we keep the particle
+      77  : colors=10        ;Zero Image 'M'
+      116 : colors=0       ;Tiny Image 't'
+      108 : colors=1        ;Linear Image 'l'
+      67  : colors=2         ;Center-out Image 'C'
+      111 : colors=3      ;Oriented Image 'o'
+      97  : colors=4      ;Aggregate Image 'a'
+      103 : colors=5     ;Graupel Image 'g'
+      115 : colors=6        ;Sphere Image 's'
+      104 : colors=7        ;Hexagonal Image 'h'
+      105 : colors=8      ;Irregular Image 'i'
+      100 : colors=9        ;Dendrite Image 'd'
+    ENDCASE
+    
+    IF (colors NE 0 ) THEN BEGIN
+      CASE colors OF
+        1: wyo1= 'lime'
+        2: wyo1= 'red'
+        3: wyo1= 'yellow'
+        4: wyo1= 'purple'
+        5: wyo1= 'magenta'
+        6: wyo1= 'blue'
+        7: wyo1= 'teal'
+        8: wyo1= 'orange'
+        9: wyo1= 'cyan'
+      ENDCASE
+      wyo= tot_slice
+      wyo2= tot_slice + scnt[i]
+      irregular_location = Float(wyo)/1700l
+      irregular_location2 = Float(wyo2)/1700l
+      CASE TOT_BUF OF
+        0: y_location= 0.80
+        1: y_location= 0.55
+        2: y_location= 0.30
+        3: y_location= 0.08
+      ENDCASE
+      wyo_test=POLYLINE([irregular_location, irregular_location2],[y_location, y_location-0.00000000000000000001], COLOR= wyo1, THICK=6, TRANSPARENCY=55)
+    ENDIF
+    ENDIF
+
+    
     disp_parts=disp_parts+1
+    ;IF (part_cnt GT 1699) THEN STOP
     time_disp[TOT_BUF, part_cnt] = hhmmss[i]
     pos_disp[TOT_BUF, part_cnt] = tot_slice
     tot_slice = tot_slice+scnt[i]        ;particle is accepted add slices to the buffer
     part_cnt=part_cnt+1
+    
+   
     ;;;;;;;
     IF (stt[tot_buf] EQ -1) THEN stt[tot_buf] = i   ;if this is the first particle in buffer, set stt
     stp[tot_buf] = i                     ;assume it is last particle in buffer (this will get overwritten on next iteration if it is not)
     ;;;;;;;
     ;If we have more than 1700 slices, are buffer is full
-    IF (TOT_SLICE GT 1700) THEN BEGIN
+    IF (TOT_SLICE GE 1700) THEN BEGIN
       stp[tot_buf]=i-1
       time_disp[TOT_BUF, part_cnt] = -999
       pos_disp[TOT_BUF, part_cnt] = -999     

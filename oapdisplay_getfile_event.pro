@@ -76,7 +76,15 @@ PRO OAPdisplay_getfile_event,ev
 
   fileinfo.nparts = N_ELEMENTS(hhmmss)
   start_time = STRTRIM( STRING(hhmmss[0]), 2)
+  six_hhmmss=STRTRIM(STRING(start_time),2)
+  six_hhmmss= '000000' + six_hhmmss
+  start_time= six_hhmmss.substring(-6)
+  tmp= six_hhmmss
   stop_time = STRTRIM( STRING(hhmmss[fileinfo.nparts-1]), 2)
+  six_hhmmss=STRTRIM(STRING(stop_time),2)
+  six_hhmmss= '000000' + six_hhmmss
+  stop_time= six_hhmmss.substring(-6)
+  tmp= six_hhmmss
   display_info.range_time = start_time + ' -- ' + stop_time
   timerange_widg_id = WIDGET_INFO(ev.top,find_by_uname='timerange_widg')
   WIDGET_CONTROL, set_value =display_info.range_time, timerange_widg_id

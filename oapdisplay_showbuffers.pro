@@ -320,6 +320,7 @@ IF (bad_timestamps) THEN BEGIN
 
 
 
+
     six_buffer1_first_time = STRTRIM(STRING(buffer1_first_time),2)
     six_buffer1_first_time = '000000' + six_buffer1_first_time
     six_buffer1_first_time = six_buffer1_first_time.substring(-6)

@@ -11,12 +11,20 @@ PRO OAPdisplay_event,ev
   WIDGET_CONTROL, get_value=tmp, stt_widg_id
   IF (LONG(tmp) LT hhmmss[0]) THEN tmp = STRTRIM( STRING(hhmmss[0]), 2)
   IF (LONG(tmp) GT hhmmss[fileinfo.nparts-1]) THEN tmp = STRTRIM( STRING(hhmmss[fileinfo.nparts-1]), 2)
+  six_hhmmss=STRTRIM(STRING(tmp),2)
+  six_hhmmss= '000000' + six_hhmmss
+  six_hhmmss= six_hhmmss.substring(-6)
+  tmp= six_hhmmss
   WIDGET_CONTROL, set_value = tmp, stt_widg_id
   stt_hhmmss = LONG((tmp)[0])
   stp_widg_id =  WIDGET_INFO(ev.top,find_by_uname='stp_widg')
   WIDGET_CONTROL, get_value=tmp, stp_widg_id
   IF (LONG(tmp) LT hhmmss[0]) THEN tmp = STRTRIM( STRING(hhmmss[fileinfo.nparts-1]), 2)
   IF (LONG(tmp) GT hhmmss[fileinfo.nparts-1]) THEN tmp = STRTRIM( STRING(hhmmss[fileinfo.nparts-1]), 2)
+  six_hhmmss=STRTRIM(STRING(tmp),2)
+  six_hhmmss= '000000' + six_hhmmss
+  six_hhmmss= six_hhmmss.substring(-6)
+  tmp= six_hhmmss
   WIDGET_CONTROL, set_value = tmp, stp_widg_id
   stp_hhmmss = LONG((tmp)[0])
   IF (stp_hhmmss LE stt_hhmmss) THEN BEGIN
@@ -55,6 +63,7 @@ PRO OAPdisplay_event,ev
   WIDGET_CONTROL, set_value=tmp, nth_part_widg_id
   nth = LONG((tmp)[0])
 
+
   ;get the habits to plot
   hab_widg_id = WIDGET_INFO(ev.top,find_by_uname='hab_widg')
   WIDGET_CONTROL, get_value=hab_sel, hab_widg_id
@@ -62,6 +71,10 @@ PRO OAPdisplay_event,ev
   ;checks to see if timestamps are selected to display
   Timestamp_widg_id = WIDGET_INFO(ev.top,find_by_uname='timestamp_widg')
   WIDGET_CONTROL, get_value=timestamp_sel, Timestamp_widg_id
+  
+  ;checks to see if habit colors are selected to display
+  hab_colors_widg_id = WIDGET_INFO(display_info.hab_colors_widg_id, /Droplist_Select)
+  WIDGET_CONTROL, display_info.hab_colors_widg_id, get_uvalue=hab_color_option
 
 
   ;determine the indices of the particles within the timerange requested and number of particles
@@ -83,6 +96,10 @@ PRO OAPdisplay_event,ev
   ;write information about the images displayed (start & end times, minimum & maximum diameter shown)
   ;ImageTimestamp_id=WIDGET_INFO
   
+  six_hhmmss=STRTRIM(STRING(hhmmss),2)
+  six_hhmmss= '000000' + six_hhmmss
+  six_hhmmss= six_hhmmss.substring(-6)
+  hhmmss= six_hhmmss
   
   ImageInfo_id = WIDGET_INFO(ev.top,find_by_uname='Percent')
   display_info.image_percent = '% of accepted particles shown: '+STRTRIM(STRING(percentage),2) + '%'

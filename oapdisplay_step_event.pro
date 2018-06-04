@@ -73,9 +73,6 @@ PRO OAPdisplay_step_event,ev
   ImageMAXD_id = WIDGET_INFO(ev.top,find_by_uname='imgMAXD')
   display_info.img_maxd = 'Image MaxD: '+STRTRIM(STRING(LONG(maxD*1000)),2)
   WIDGET_CONTROL, set_value=display_info.img_maxD, ImageMAXD_id
-  ImageNTH_id = WIDGET_INFO(ev.top,find_by_uname='imgNTH')
-  display_info.img_nth = 'Image Nth: '+STRTRIM(STRING(LONG(nth)),2)
-  WIDGET_CONTROL, set_value=display_info.img_nth, nth_part_widg_id
 
 
   ;  IF (last LT inds[npart-1]) THEN BEGIN
