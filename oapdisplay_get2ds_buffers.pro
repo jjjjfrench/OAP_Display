@@ -142,7 +142,7 @@ PRO OAPdisplay_get2DS_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, las
     arr_pos = 0
     FOR i = stt[k], stp[k] DO BEGIN
       IF (scnt[i] LT 1) THEN CONTINUE
-      IF (touching_edge[i] GT 1) THEN CONTINUE ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+      IF (touching_edge[i] GT 1) THEN CONTINUE
       IF (auto_reject[i] GT 50) THEN CONTINUE  ;auto reject of 48 is accepted, all others are rejected
       IF (diam[i] LT minD) THEN CONTINUE
       IF (diam[i] GT maxD) THEN CONTINUE
