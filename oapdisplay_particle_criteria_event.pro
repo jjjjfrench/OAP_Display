@@ -29,12 +29,8 @@ FUNCTION OAPdisplay_particle_criteria_event,ev
       WIDGET_CONTROL, get_value=tmp, ev.id
       timestamp_selection=tmp
     END
-    (ev.ID EQ (WIDGET_INFO(ev.top,find_by_uname='save_widg')) ) : BEGIN
-      WIDGET_CONTROL, get_value=tmp, ev.id
-      save_selection=tmp
-    END
     (ev.ID EQ (WIDGET_INFO(ev.top,find_by_uname='hab_colors_widg')) ) : BEGIN
-      WIDGET_CONTROL, get_uvalue=tmp, ev.id
+      WIDGET_CONTROL, get_value=tmp, ev.id
       hab_colors_selection=tmp
     END
   ENDCASE

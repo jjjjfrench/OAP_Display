@@ -47,6 +47,7 @@ common block1
   i=image(transpose(LONG(data_record[1,*,*])), /current, POSITION=[0,0.515,1,0.75])
   i=image(transpose(LONG(data_record[2,*,*])), /current, POSITION=[0,0.27,1,0.5])
   i=image(transpose(LONG(data_record[3,*,*])), /current, POSITION=[0,0.03,1,0.25])
+  
 
 bad_timestamps=0                                          ; Checks to see if timestamps have been selected to display
 IF (timestamp_sel[0]) THEN bad_timestamps=1
@@ -288,7 +289,7 @@ IF (bad_timestamps) THEN BEGIN
   buffer4_sixth_location = Float(buffer4_sixth_time_slicnt)/1700l
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   
-  
+  time1=systime(/seconds)
   
   buffer1_first_timeline=POLYLINE([(buffer1_first_location),(buffer1_first_location - 0.0000000001)],[0.985,0.775])
   buffer1_second_timeline=POLYLINE([(buffer1_second_location),(buffer1_second_location - 0.0000000001)],[0.985,0.775])
@@ -402,7 +403,6 @@ IF (bad_timestamps) THEN BEGIN
     six_buffer4_sixth_time = STRTRIM(STRING(buffer4_sixth_time),2)
     six_buffer4_sixth_time = '000000' + six_buffer4_sixth_time
     six_buffer4_sixth_time = six_buffer4_sixth_time.substring(-6)
-
 
  
   buffer1_timestamp1= TEXT(buffer1_first_location,0.74, FONT_SIZE=10.5 , six_buffer1_first_time)

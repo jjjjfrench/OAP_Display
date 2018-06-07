@@ -73,7 +73,6 @@ PRO OAPdisplay_getfile_event,ev
   NCDF_VARGET, fileinfo.ncid_proc, varid, touching_edge
 
 
-
   fileinfo.nparts = N_ELEMENTS(hhmmss)
   start_time = STRTRIM( STRING(hhmmss[0]), 2)
   six_hhmmss=STRTRIM(STRING(start_time),2)

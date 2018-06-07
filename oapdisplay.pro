@@ -1,11 +1,12 @@
 PRO OAPdisplay
 
   RESOLVE_ROUTINE,['oapdisplay_quit_event','OAPdisplay_getfile_event','OAPdisplay_settime_event','OAPdisplay_event',$
-    'OAPdisplay_get2ds_buffers','OAPdisplay_showbuffers','OAPdisplay_step_event','OAPdisplay_save_image']
-  RESOLVE_ROUTINE,'oapdisplay_particle_criteria_event',/IS_FUNCTION
+    'OAPdisplay_get2ds_buffers','OAPdisplay_showbuffers','OAPdisplay_step_event','OAPdisplay_save_image'];,'OAPdisplay_color_select']
+  RESOLVE_ROUTINE, 'oapdisplay_particle_criteria_event',/IS_FUNCTION
 
-  common block1, fileinfo, display_info, prbtype, hhmmss, pos, scnt, rec, diam, percentage, nth, hab, hab_selection, timestamp_selection, timestamp_sel, hab_color_option,$ 
-   hab_colors_widg_id, i, auto_reject, touching_edge, time_disp, pos_disp
+  common block1, fileinfo, base_widg, display_info, prbtype, hhmmss, pos, scnt, rec, diam, percentage, nth, hab, hab_selection, timestamp_selection, timestamp_sel, hab_color_option,$ 
+   hab_colors_widg_id, i, auto_reject, touching_edge, time_disp, pos_disp, $
+   spherical_color, graupel_color, aggregate_color, dendrite_color, hexagonal_color, irregular_color, oriented_color, linear_color, centerout_color
 
   fileinfo = {ncid_base:-999L, ncid_proc:-999L, nparts: 0L, data_varid:0L }
 
@@ -16,7 +17,6 @@ PRO OAPdisplay
     first:-999L, last:-999L, buf_full:0L}
 
   hhmmss=0L & pos=0L & scnt=0L & rec=0L & diam=0L & prbtype =''
-
 
 
   widgtit = 'OAP Display'
@@ -65,8 +65,18 @@ PRO OAPdisplay
   Timestamp_widg_id=CW_BGROUP(base_widg,'Timestamps', Column=1,/NONEXCLUSIVE,$
     xoff=995,/FRAME,yoff=105,xsize=80,ysize=25, uname='timestamp_widg', event_funct='OAPdisplay_particle_criteria_event', set_value=1)
   hab_color_options=['Habit Colors Off','Habit Colors On']
- display_info.hab_colors_widg_id=WIDGET_DROPLIST(base_widg,value=hab_color_options,uvalue=hab_color_options,event_func='OAPdisplay_particle_criteria_event',xoff=403,yoff=101,sensitive=0,uname='hab_colors_widg')
-  
+ 
+ 
+ ; display_info.hab_colors_widg_id=WIDGET_DROPLIST(base_widg,value=hab_color_options,uvalue=hab_color_options, $ 
+ ;  event_func='OAPdisplay_particle_criteria_event',xoff=403,yoff=101,sensitive=1,uname='hab_colors_widg')
+
+  ; This button is UNAVAILABLE until I can figure out how to call dialog_colorpicker using a widget button.
+  ; For some reason, using a button to call a procedure that uses dialog_colorpicker causes the output
+  ; value to be 0.
+  ;color_select_widg=WIDGET_BUTTON(base_widg,value='Set Habit Colors',event_pro= 'oapdisplay_color_select' , $
+  ;  xsize=110,ysize=30,xoffset=293,yoffset=104, sensitive=1,uname='color_select_button')
+
+
 
   Display_button_id=WIDGET_BUTTON(base_widg,value='Display Particles',event_pro='OAPdisplay_event',$
     xsize=110,ysize=60,xoffset=980,yoffset=10, sensitive=0, uname='Display_button')
@@ -99,14 +109,19 @@ PRO OAPdisplay
   Back_button_id=WIDGET_BUTTON(base_widg,value='Step Backward',event_pro='OAPdisplay_step_event',$
     xsize=110,ysize=30,xoffset=830,yoffset=550, sensitive=0, uname='stepback_button')
 
-
   widget_control,/realize,/hourglass,base_widg
   WIDGET_CONTROL, plot_widg_id, GET_VALUE=graphicWin
 
   graphicWin.select
+  
+  
+  
+  ;oapdisplay_color_select ;******************************************************************************************************
+
+
+
 
   T1 = TEXT(0.5,0.5, ' ', Alignment=0.5)
-
 
   XMANAGER,'WCLdisplay',base_widg
 
