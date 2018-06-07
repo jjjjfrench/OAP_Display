@@ -94,8 +94,6 @@ PRO OAPdisplay_event,ev
   OAPdisplay_showbuffers, tmp     ; Had to remove ', prbtype' in order to make timestamps work
 
   ;write information about the images displayed (start & end times, minimum & maximum diameter shown)
-  ;ImageTimestamp_id=WIDGET_INFO
-  ;time1=systime(/seconds)
   
   
   hhmmss_first=STRTRIM(STRING(hhmmss[first]),2)

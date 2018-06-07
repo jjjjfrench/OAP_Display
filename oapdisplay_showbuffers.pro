@@ -289,7 +289,6 @@ IF (bad_timestamps) THEN BEGIN
   buffer4_sixth_location = Float(buffer4_sixth_time_slicnt)/1700l
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   
-  time1=systime(/seconds)
   
   buffer1_first_timeline=POLYLINE([(buffer1_first_location),(buffer1_first_location - 0.0000000001)],[0.985,0.775])
   buffer1_second_timeline=POLYLINE([(buffer1_second_location),(buffer1_second_location - 0.0000000001)],[0.985,0.775])
