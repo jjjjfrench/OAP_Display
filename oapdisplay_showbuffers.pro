@@ -73,7 +73,7 @@ IF (bad_timestamps) THEN BEGIN
   buffer4_first_time= time_disp[3,0]
   buffer4_last_time= time_disp[3,buffer4_last_part]
   
-  
+  forward_function hhmmss2sec
   buffer1_first_time=hhmmss2sec(buffer1_first_time)
   buffer1_last_time=hhmmss2sec(buffer1_last_time)
   buffer2_first_time=hhmmss2sec(buffer2_first_time)               ; Converts the first and last times of each buffer from hhmmss to seconds.
@@ -103,6 +103,7 @@ IF (bad_timestamps) THEN BEGIN
   buffer1_fifth_time = buffer1_fourth_time + buffer1_spacing
   buffer1_sixth_time = buffer1_fifth_time + buffer1_spacing
   
+  forward_function sec2hhmmss
   buffer1_first_time=sec2hhmmss(buffer1_first_time)
   buffer1_second_time=sec2hhmmss(buffer1_second_time)                     ; Converts the times from seconds to hhmmss
   buffer1_third_time=sec2hhmmss(buffer1_third_time)
