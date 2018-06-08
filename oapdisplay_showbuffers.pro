@@ -72,12 +72,23 @@ IF (bad_timestamps) THEN BEGIN
   buffer3_last_time= time_disp[2,buffer3_last_part]
   buffer4_first_time= time_disp[3,0]
   buffer4_last_time= time_disp[3,buffer4_last_part]
+  
+  
+  buffer1_first_time=hhmmss2sec(buffer1_first_time)
+  buffer1_last_time=hhmmss2sec(buffer1_last_time)
+  buffer2_first_time=hhmmss2sec(buffer2_first_time)               ; Converts the first and last times of each buffer from hhmmss to seconds.
+  buffer2_last_time=hhmmss2sec(buffer2_last_time)                 ; These get converted back to hhmmss later to be used as timestamp values. 
+  buffer3_first_time=hhmmss2sec(buffer3_first_time)
+  buffer3_last_time=hhmmss2sec(buffer3_last_time)
+  buffer4_first_time=hhmmss2sec(buffer4_first_time)
+  buffer4_last_time=hhmmss2sec(buffer4_last_time)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ; First Buffer
 
-  buffer1_total_time = buffer1_last_time - buffer1_first_time             
+  buffer1_total_time = buffer1_last_time - buffer1_first_time           
+  
    buffer1_spacing= ceil((buffer1_total_time)/6)   ; Determines the amount of time between timestamps.
   CASE buffer1_spacing OF
     0: buffer1_spacing=1   ; If the total time of the buffer is less than 6, then there should be one second between timestamps.
@@ -92,7 +103,12 @@ IF (bad_timestamps) THEN BEGIN
   buffer1_fifth_time = buffer1_fourth_time + buffer1_spacing
   buffer1_sixth_time = buffer1_fifth_time + buffer1_spacing
   
-  
+  buffer1_first_time=sec2hhmmss(buffer1_first_time)
+  buffer1_second_time=sec2hhmmss(buffer1_second_time)                     ; Converts the times from seconds to hhmmss
+  buffer1_third_time=sec2hhmmss(buffer1_third_time)
+  buffer1_fourth_time=sec2hhmmss(buffer1_fourth_time)
+  buffer1_fifth_time=sec2hhmmss(buffer1_fifth_time)
+  buffer1_sixth_time=sec2hhmmss(buffer1_sixth_time)
   
   
   buffer1_first_time_part = where(time_disp[0,*] GE buffer1_first_time)
@@ -147,6 +163,13 @@ IF (bad_timestamps) THEN BEGIN
   buffer2_fourth_time = buffer2_third_time + buffer2_spacing
   buffer2_fifth_time = buffer2_fourth_time + buffer2_spacing
   buffer2_sixth_time = buffer2_fifth_time + buffer2_spacing
+  
+  buffer2_first_time=sec2hhmmss(buffer2_first_time)
+  buffer2_second_time=sec2hhmmss(buffer2_second_time)
+  buffer2_third_time=sec2hhmmss(buffer2_third_time)
+  buffer2_fourth_time=sec2hhmmss(buffer2_fourth_time)
+  buffer2_fifth_time=sec2hhmmss(buffer2_fifth_time)
+  buffer2_sixth_time=sec2hhmmss(buffer2_sixth_time)
 
 
   buffer2_first_time_part = where(time_disp[1,*] GE buffer2_first_time)
@@ -201,6 +224,13 @@ IF (bad_timestamps) THEN BEGIN
   buffer3_fourth_time = buffer3_third_time + buffer3_spacing
   buffer3_fifth_time = buffer3_fourth_time + buffer3_spacing
   buffer3_sixth_time = buffer3_fifth_time + buffer3_spacing
+  
+  buffer3_first_time=sec2hhmmss(buffer3_first_time)
+  buffer3_second_time=sec2hhmmss(buffer3_second_time)
+  buffer3_third_time=sec2hhmmss(buffer3_third_time)
+  buffer3_fourth_time=sec2hhmmss(buffer3_fourth_time)
+  buffer3_fifth_time=sec2hhmmss(buffer3_fifth_time)
+  buffer3_sixth_time=sec2hhmmss(buffer3_sixth_time)
 
 
   buffer3_first_time_part = where(time_disp[2,*] GE buffer3_first_time)
@@ -254,6 +284,14 @@ IF (bad_timestamps) THEN BEGIN
   buffer4_fourth_time = buffer4_third_time + buffer4_spacing
   buffer4_fifth_time = buffer4_fourth_time + buffer4_spacing
   buffer4_sixth_time = buffer4_fifth_time + buffer4_spacing
+  
+  buffer4_first_time=sec2hhmmss(buffer4_first_time)
+  buffer4_second_time=sec2hhmmss(buffer4_second_time)
+  buffer4_third_time=sec2hhmmss(buffer4_third_time)
+  buffer4_fourth_time=sec2hhmmss(buffer4_fourth_time)
+  buffer4_fifth_time=sec2hhmmss(buffer4_fifth_time)
+  buffer4_sixth_time=sec2hhmmss(buffer4_sixth_time)
+
 
   buffer4_first_time_part = where(time_disp[3,*] GE buffer4_first_time)
   buffer4_part_prior_to_first_time = buffer4_first_time_part[0]
