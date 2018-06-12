@@ -25,7 +25,7 @@ PRO OAPdisplay_get2DS_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, las
     IF (scnt[i] LT 1) THEN CONTINUE           ;particle has no slice count, skip it
     IF (touching_edge[i] GT 1) THEN CONTINUE  ;image cannot be touching the edge
     IF (auto_reject[i] GT 50) THEN CONTINUE   ;auto reject of 48 is accepted, all others are rejected
-    tot_parts=tot_parts+1
+    tot_parts=temporary(tot_parts)+1
     IF (diam[i] LT minD) THEN CONTINUE        ;particle is too small, skip it
     IF (diam[i] GT maxD) THEN CONTINUE        ;particle is too large, skip it
     IF (i mod nth NE 0) THEN CONTINUE         ;if particle index not multiple of nth value, skip it
@@ -46,57 +46,49 @@ PRO OAPdisplay_get2DS_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, las
     IF (BAD_HABIT) THEN CONTINUE
 
     ;IF WE MAKE IT HERE THE PARTICLE IS GOOD TO DISPLAY
-    bad_hab_colors=0                                          ; Checks to see if timestamps have been selected to display
-    IF (hab_color_option[[hab_colors_widg_id]] EQ 'Habit Colors On') THEN bad_hab_colors=1
-    IF (bad_hab_colors) THEN BEGIN
     
-    CASE HAB[I] OF                       ; if hab_sel is set to display then 'BAD_HABIT' is 0 (False) and we keep the particle
-      77  : colors=10        ;Zero Image 'M'
-      116 : colors=0       ;Tiny Image 't'
-      108 : colors=1        ;Linear Image 'l'
-      67  : colors=2         ;Center-out Image 'C'
-      111 : colors=3      ;Oriented Image 'o'
-      97  : colors=4      ;Aggregate Image 'a'
-      103 : colors=5     ;Graupel Image 'g'
-      115 : colors=6        ;Sphere Image 's'
-      104 : colors=7        ;Hexagonal Image 'h'
-      105 : colors=8      ;Irregular Image 'i'
-      100 : colors=9        ;Dendrite Image 'd'
-    ENDCASE
+ ;   bad_hab_colors=0                                          ; Checks to see if habit colors have been selected to display
+;    IF (hab_color_option[[hab_colors_widg_id]] EQ 'Habit Colors On') THEN bad_hab_colors=1
+ ;   IF (bad_hab_colors) THEN BEGIN
     
-    IF (colors NE 0 ) THEN BEGIN
-      CASE colors OF
-        1: wyo1= 'lime'
-        2: wyo1= 'red'
-        3: wyo1= 'yellow'
-        4: wyo1= 'purple'
-        5: wyo1= 'magenta'
-        6: wyo1= 'blue'
-        7: wyo1= 'teal'
-        8: wyo1= 'orange'
-        9: wyo1= 'cyan'
-      ENDCASE
-      wyo= tot_slice
-      wyo2= tot_slice + scnt[i]
-      irregular_location = Float(wyo)/1700l
-      irregular_location2 = Float(wyo2)/1700l
-      CASE TOT_BUF OF
-        0: y_location= 0.80
-        1: y_location= 0.55
-        2: y_location= 0.30
-        3: y_location= 0.08
-      ENDCASE
-      wyo_test=POLYLINE([irregular_location, irregular_location2],[y_location, y_location-0.00000000000000000001], COLOR= wyo1, THICK=6, TRANSPARENCY=55)
-    ENDIF
-    ENDIF
+   ; CASE HAB[I] OF                       
+   ;   77  : wyo1= [255,255,255]        ;Zero Image 'M'
+   ;   116 : wyo1= [0,0,0]       ;Tiny Image 't'
+   ;   108 : wyo1= [linear_color]        ;Linear Image 'l'
+   ;   67  : wyo1= [centerout_color]         ;Center-out Image 'C'
+   ;   111 : wyo1= [oriented_color]      ;Oriented Image 'o'
+   ;   97  : wyo1= [aggregate_color]      ;Aggregate Image 'a'
+   ;   103 : wyo1= [graupel_color]     ;Graupel Image 'g'
+   ;   115 : wyo1= [spherical_color]        ;Spherical Image 's'
+   ;   104 : wyo1= [hexagonal_color]        ;Hexagonal Image 'h'
+   ;   105 : wyo1= [irregular_color]      ;Irregular Image 'i'
+   ;   100 : wyo1= [dendrite_color]        ;Dendrite Image 'd'
+   ; ENDCASE
+   
+   
+    ;  wyo= tot_slice
+    ;  wyo2= tot_slice + scnt[i]
+    ;  irregular_location = Float(wyo)/1700l              ; Determines the starting slicecount of each particle (only determines the x axis starting point)
+    ;  irregular_location2 = Float(wyo2)/1700l            ; Determines the ending slicecount of each particle (only determines the x axis ending point
+                                                          ; Ideally, we can get rid of this polyline crap if we can find a way to change the color of the
+                                                          ; particles when they are printed so that they are printed as the selected colors, rather
+                                                          ; than simply being printed as black.
+      ;CASE TOT_BUF OF
+      ;  0: y_location= 0.80
+       ; 1: y_location= 0.55
+     ;   2: y_location= 0.30
+      ;  3: y_location= 0.08
+     ; ENDCASE
+      ;wyo_test=POLYLINE([irregular_location, irregular_location2],[y_location, y_location-0.00000000000000000001], COLOR= wyo1, THICK=6, TRANSPARENCY=55)
+   ; ENDIF
 
     
-    disp_parts=disp_parts+1
+    disp_parts=temporary(disp_parts)+1
     ;IF (part_cnt GT 1699) THEN STOP
     time_disp[TOT_BUF, part_cnt] = hhmmss[i]
     pos_disp[TOT_BUF, part_cnt] = tot_slice
     tot_slice = tot_slice+scnt[i]        ;particle is accepted add slices to the buffer
-    part_cnt=part_cnt+1
+    part_cnt=temporary(part_cnt)+1
     
    
     ;;;;;;;

@@ -73,8 +73,8 @@ PRO OAPdisplay_event,ev
   WIDGET_CONTROL, get_value=timestamp_sel, Timestamp_widg_id
   
   ;checks to see if habit colors are selected to display
-  hab_colors_widg_id = WIDGET_INFO(display_info.hab_colors_widg_id, /Droplist_Select)
-  WIDGET_CONTROL, display_info.hab_colors_widg_id, get_uvalue=hab_color_option
+  ;hab_colors_widg_id = WIDGET_INFO(display_info.hab_colors_widg_id, /Droplist_Select)
+  ;WIDGET_CONTROL, display_info.hab_colors_widg_id, get_uvalue=hab_color_option
 
 
   ;determine the indices of the particles within the timerange requested and number of particles
@@ -94,21 +94,26 @@ PRO OAPdisplay_event,ev
   OAPdisplay_showbuffers, tmp     ; Had to remove ', prbtype' in order to make timestamps work
 
   ;write information about the images displayed (start & end times, minimum & maximum diameter shown)
-  ;ImageTimestamp_id=WIDGET_INFO
   
-  six_hhmmss=STRTRIM(STRING(hhmmss),2)
-  six_hhmmss= '000000' + six_hhmmss
-  six_hhmmss= six_hhmmss.substring(-6)
-  hhmmss= six_hhmmss
+  
+  hhmmss_first=STRTRIM(STRING(hhmmss[first]),2)
+  hhmmss_first= '000000' + hhmmss_first
+  hhmmss_first= hhmmss_first.substring(-6)
+  
+  hhmmss_last=STRTRIM(STRING(hhmmss[last]),2)
+  hhmmss_last= '000000' + hhmmss_last
+  hhmmss_last= hhmmss_last.substring(-6)
+
+  
   
   ImageInfo_id = WIDGET_INFO(ev.top,find_by_uname='Percent')
   display_info.image_percent = '% of accepted particles shown: '+STRTRIM(STRING(percentage),2) + '%'
   WIDGET_CONTROL, set_value=display_info.image_percent, ImageINFO_id
   ImageSTT_id = WIDGET_INFO(ev.top,find_by_uname='imgSTT')
-  display_info.img_stt = 'Image Start: '+STRTRIM(STRING(hhmmss[first]),2)
+  display_info.img_stt = 'Image Start: '+ hhmmss_first
   WIDGET_CONTROL, set_value=display_info.img_stt, ImageSTT_id
   ImageSTP_id = WIDGET_INFO(ev.top,find_by_uname='imgSTP')
-  display_info.img_stp = 'Image Stop: '+STRTRIM(STRING(hhmmss[last]),2)
+  display_info.img_stp = 'Image Stop: '+ hhmmss_last
   WIDGET_CONTROL, set_value=display_info.img_stp, ImageSTP_id
   ImageMIND_id = WIDGET_INFO(ev.top,find_by_uname='imgMIND')
   display_info.img_mind = 'Image MinD: '+STRTRIM(STRING(LONG(minD*1000)),2)
