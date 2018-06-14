@@ -63,7 +63,6 @@ filters2= ['cat.DIMG*.proc.cdf']
   IF (prbtype EQ '2DS') THEN BEGIN                         ; Slicecount is read-in normally for the 2DS
   varid = NCDF_VARID(fileinfo.ncid_proc, 'SliceCount')
   NCDF_VARGET, fileinfo.ncid_proc, varid, scnt
-  PRINT, 'slicecount'
   ENDIF
   IF (prbtype EQ 'CIP') THEN scnt = pos[1,*]-pos[0,*] ; CIP files determine scnt using the difference between the beginning and the end of each particle
   varid = NCDF_VARID(fileinfo.ncid_proc, 'parent_rec_num')
