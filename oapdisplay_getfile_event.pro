@@ -11,7 +11,8 @@ PRO OAPdisplay_getfile_event,ev
   WIDGET_CONTROL, get_value=tmp, path_widg_id
   display_info.path = tmp
 
-  fname_b = DIALOG_PICKFILE(FILTER='DIMG.base*.cdf', PATH=display_info.path, GET_PATH=tmp, $
+filters1= ['DIMG.base*.cdf;DIMG*.CIP.cdf']
+  fname_b = DIALOG_PICKFILE(FILTER=filters1, PATH=display_info.path, GET_PATH=tmp, $
     TITLE='Choose base netCDF File', /READ, /MUST_EXIST)
   IF (fname_b eq '') THEN BEGIN
     display_info.fname_base = 'No File Selected'
@@ -25,7 +26,8 @@ PRO OAPdisplay_getfile_event,ev
   display_info.fname_base = STRMID(fname_b,STRLEN(display_info.path))
   WIDGET_CONTROL,set_value=display_info.fname_base,fbase_widg_id
 
-  fname_p = DIALOG_PICKFILE(FILTER='cat.DIMG.base*.proc.cdf', PATH=display_info.path, GET_PATH=tmp, $
+filters2= ['cat.DIMG*.proc.cdf']
+  fname_p = DIALOG_PICKFILE(FILTER=filters2, PATH=display_info.path, GET_PATH=tmp, $
     TITLE='Choose proc netCDF File', /READ, /MUST_EXIST)
   IF (fname_p eq '') THEN BEGIN
     display_info.fname_base = 'No File Selected'
@@ -40,12 +42,13 @@ PRO OAPdisplay_getfile_event,ev
   WIDGET_CONTROL,set_value=display_info.fname_proc,fproc_widg_id
 
   ;using the filename -- check and set the probe type
-  IF (STRPOS(fname_p, '2DS') GE 0) THEN BEGIN
-    prbtype = '2DS'
-  ENDIF ELSE BEGIN
-    PRINT,'Unsupported Probe type'
+  IF (STRPOS(fname_p, '2DS') GE 0) THEN  prbtype = '2DS'
+  IF (STRPOS(fname_p, 'CIP') GE 0) THEN  prbtype = 'CIP'
+  IF (((STRPOS(fname_p, '2DS')) AND (STRPOS(fname_p, 'CIP'))) LT 0) THEN BEGIN
+    PRINT, 'Unsupported Probetype'
     RETURN
-  ENDELSE
+  ENDIF
+  
 
   ;now open the files
   fileinfo.ncid_base = NCDF_OPEN(fname_b)
@@ -57,8 +60,12 @@ PRO OAPdisplay_getfile_event,ev
   varid = NCDF_VARID(fileinfo.ncid_proc, 'position')
   NCDF_VARGET, fileinfo.ncid_proc, varid, pos
   pos=pos-1
+  IF (prbtype EQ '2DS') THEN BEGIN                         ; Slicecount is read-in normally for the 2DS
   varid = NCDF_VARID(fileinfo.ncid_proc, 'SliceCount')
   NCDF_VARGET, fileinfo.ncid_proc, varid, scnt
+  PRINT, 'slicecount'
+  ENDIF
+  IF (prbtype EQ 'CIP') THEN scnt = pos[1,*]-pos[0,*] ; CIP files determine scnt using the difference between the beginning and the end of each particle
   varid = NCDF_VARID(fileinfo.ncid_proc, 'parent_rec_num')
   NCDF_VARGET, fileinfo.ncid_proc, varid, rec
   rec=rec-1 ;idl counts from zero, the files count from 1

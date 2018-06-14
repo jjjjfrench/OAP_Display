@@ -154,6 +154,8 @@ PRO OAPdisplay_get2DS_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, las
         100 : IF (HAB_SEL[10]) THEN BAD_HABIT=0       ;Dendrite Image 'd'
       ENDCASE
       IF (BAD_HABIT) THEN CONTINUE
+      
+
 
       tmp[k,*,arr_pos:arr_pos+scnt[i]-1] = tmp_data[*,pos[1,i]-scnt[i]+1:pos[1,i],rec[i]-rec[first]]
       arr_pos = arr_pos+scnt[i]
