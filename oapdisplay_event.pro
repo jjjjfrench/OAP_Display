@@ -103,7 +103,7 @@ PRO OAPdisplay_event,ev
   hhmmss_last= hhmmss_last.substring(-6)
 
   
-   ;write information about the images displayed (percentage,start & end times, minimum & maximum diameter shown)
+   ;write information about the images displayed (percentage, start & end times, minimum & maximum diameter shown)
   ImageInfo_id = WIDGET_INFO(ev.top,find_by_uname='Percent')
   display_info.image_percent = '% of accepted particles shown: '+STRTRIM(STRING(percentage),2) + '%'
   WIDGET_CONTROL, set_value=display_info.image_percent, ImageINFO_id
