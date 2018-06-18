@@ -10,7 +10,7 @@ PRO OAPdisplay
 
   fileinfo = {ncid_base:-999L, ncid_proc:-999L, nparts: 0L, data_varid:0L }
 
-  display_info = {fname_base:'No File Selected', fname_proc:'No File Selected', path:'/kingair_data/snowie17/2DS_ncfilt/', output_path:'/home', $
+  display_info = {fname_base:'No File Selected', fname_proc:'No File Selected', path:'/kingair_data/snowie17/2DS/', output_path:'/home', $
     nrec: 'No Records to Show', range_time:'hhmmss -- hhmmss', hab_colors_widg_id:0L,$
     image_percent:'% of accepted particles shown: --%', stt_time:'hhmmss', stp_time:'hhmmss', min_size:'0', max_size:'2000', nth_part:'1', $
     img_stt:'Image Start: hhmmss', img_stp:'Image Stop: hhmmss', img_minD:'Image MinD: 0',  img_maxD:'Image MaxD: 2000', $ 
@@ -22,7 +22,7 @@ PRO OAPdisplay
   widgtit = 'OAP Display'
   ;set up base widget
   base_widg=WIDGET_BASE(title=widgtit,xsize=1095,ysize=590)
-
+  
   ;set file selection and file display widget
   file_button_id=WIDGET_BUTTON(base_widg,value='New File Set',event_pro='OAPdisplay_getfile_event',$
     xsize=80,ysize=60,xoffset=10,yoffset=06, uname='file_button')

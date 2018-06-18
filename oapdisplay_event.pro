@@ -91,9 +91,7 @@ PRO OAPdisplay_event,ev
   OAPdisplay_get2DS_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, last
 
   ;the next procedure unpacks the data in the display buffers and draws the display
-  OAPdisplay_showbuffers, tmp     ; Had to remove ', prbtype' in order to make timestamps work
-
-  ;write information about the images displayed (start & end times, minimum & maximum diameter shown)
+  OAPdisplay_showbuffers, tmp
   
   
   hhmmss_first=STRTRIM(STRING(hhmmss[first]),2)
@@ -105,7 +103,7 @@ PRO OAPdisplay_event,ev
   hhmmss_last= hhmmss_last.substring(-6)
 
   
-  
+   ;write information about the images displayed (percentage, start & end times, minimum & maximum diameter shown)
   ImageInfo_id = WIDGET_INFO(ev.top,find_by_uname='Percent')
   display_info.image_percent = '% of accepted particles shown: '+STRTRIM(STRING(percentage),2) + '%'
   WIDGET_CONTROL, set_value=display_info.image_percent, ImageINFO_id
