@@ -121,20 +121,20 @@ ENDCASE
 
 CASE m OF
   0: BEGIN
-    test= [0.985,0.775]
-    test1= 0.74
+    location= [0.985,0.775]
+    yloc= 0.74
   END
   1: BEGIN
-    test= [0.735,0.525]
-    test1=0.4925
+    location= [0.735,0.525]
+    yloc=0.4925
   END
   2: BEGIN
-    test= [0.488,0.278]
-    test1=0.248
+    location= [0.488,0.278]
+    yloc=0.248
   END
   3: BEGIN
-    test=[0.242,0.032]
-    test1=0
+    location=[0.242,0.032]
+    yloc=0
   END
 ENDCASE
 
@@ -146,11 +146,11 @@ IF buffer_time EQ buffer_first_time THEN BEGIN
   buffer_part_prior_to_time = buffer_time_part[0]
   buffer_time_slicnt = pos_disp[m, buffer_part_prior_to_time]
   buffer_location = Float(buffer_time_slicnt)/1700l
-  buffer_timeline=POLYLINE([(buffer_location),(buffer_location - 0.0000000001)],test)
+  buffer_timeline=POLYLINE([(buffer_location),(buffer_location - 0.0000000001)],location)
   six_buffer_time = STRTRIM(STRING(buffer_time),2)
   six_buffer_time = '000000' + six_buffer_time
   six_buffer_time = six_buffer_time.substring(-6)
-  buffer_timestamp= TEXT(buffer_location,test1, FONT_SIZE=10.5 , six_buffer_time)
+  buffer_timestamp= TEXT(buffer_location,yloc, FONT_SIZE=10.5 , six_buffer_time)
   buffer_time=hhmmss2sec(buffer_time)
   buffer_time = buffer_time + buffer_spacing
   buffer_time=sec2hhmmss(buffer_time)
@@ -160,11 +160,11 @@ buffer_time_part = where(time_disp[m,*] GE buffer_time)
 buffer_part_prior_to_time = buffer_time_part[0]
 buffer_time_slicnt = pos_disp[m, buffer_part_prior_to_time]
 buffer_location = Float(buffer_time_slicnt)/1700l
-buffer_timeline=POLYLINE([(buffer_location),(buffer_location - 0.0000000001)],test)
+buffer_timeline=POLYLINE([(buffer_location),(buffer_location - 0.0000000001)],location)
 six_buffer_time = STRTRIM(STRING(buffer_time),2)
 six_buffer_time = '000000' + six_buffer_time
 six_buffer_time = six_buffer_time.substring(-6)
-buffer_timestamp= TEXT(buffer_location,test1, FONT_SIZE=10.5 , six_buffer_time)
+buffer_timestamp= TEXT(buffer_location,yloc, FONT_SIZE=10.5 , six_buffer_time)
 buffer_time=hhmmss2sec(buffer_time)
 buffer_time = buffer_time + buffer_spacing
 buffer_time=sec2hhmmss(buffer_time)
