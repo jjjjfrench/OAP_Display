@@ -84,11 +84,9 @@ PRO OAPdisplay_get2DS_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, las
 
     
     disp_parts=temporary(disp_parts)+1
-    ;IF (part_cnt GT 1699) THEN STOP
     time_disp[TOT_BUF, part_cnt] = hhmmss[i]
     pos_disp[TOT_BUF, part_cnt] = tot_slice
     tot_slice = tot_slice+scnt[i]        ;particle is accepted add slices to the buffer
-    part_cnt=temporary(part_cnt)+1
     
    
     ;;;;;;;
@@ -114,7 +112,9 @@ PRO OAPdisplay_get2DS_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, las
         BREAK                            ;get outta here!
       ENDELSE
     ENDIF
+    part_cnt=temporary(part_cnt)+1
   ENDFOR
+
   fraction= FLOAT(disp_parts)/FLOAT(tot_parts)*100
   percentage=STRING(fraction, format='(D6.2)')
   
