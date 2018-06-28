@@ -4,8 +4,8 @@ common block1
 
 filters = ['*.jpg;*.jpeg;*.tif;*.tiff;*.png']
 output_file = Dialog_Pickfile(FILTER = filters, PATH=display_info.output_path, GET_PATH=tmp, $
-  TITLE='Choose directory and enter image name and type (ex. ".png")', /WRITE)
-
+  TITLE='Choose directory and enter image name and type (ex. ".png")', /WRITE, /OVERWRITE_PROMPT)
+display_info.output_path = tmp
 
     i.save, output_file
     MSG1 = 'Image Saved'
