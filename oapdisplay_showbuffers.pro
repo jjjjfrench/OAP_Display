@@ -4,8 +4,7 @@ common block1
 
   ;The follow statements build the data records based on probe type
   
-  
-  CASE 1 of 
+   CASE 1 of 
     prbtype EQ '2DS' : BEGIN
       data_record = BYTARR(4,128,1700)
       ;convert to binary
@@ -15,7 +14,7 @@ common block1
             FOR i = 16, 31 DO BEGIN
               pow2 = 2L^(i-16)
               IF (LONG(tmp[m,j,k]) AND pow2) NE 0 THEN $
-                data_record[m,j*16L+(i-16),k]=0 ELSE data_record[m,j*16L+(i-16),k]=1
+                data_record[m,j*16L+(i-16),k]=color_array[k,m] ELSE data_record[m,j*16L+(i-16),k]=255
             ENDFOR
             data_record[m,j*16L:j*16L+15,k] = REVERSE(data_record[m,j*16L:j*16L+15,k],2)
           ENDFOR
@@ -52,7 +51,7 @@ common block1
             FOR i = 24, 31 DO BEGIN
               pow2 = 2L^(i-24)
               IF (LONG(tmp[m,j,k]) AND pow2) NE 0 THEN $
-                data_record[m,j*8L+(i-24),k]=1 ELSE data_record[m,j*8L+(i-24),k]=0
+                data_record[m,j*8L+(i-24),k]=255 ELSE data_record[m,j*8L+(i-24),k]=color_array[k,m]
             ENDFOR
             data_record[m,j*8L:j*8L+7,k] = REVERSE(data_record[m,j*8L:j*8L+7,k],2)
           ENDFOR
@@ -78,13 +77,11 @@ common block1
 
     END
   ENDCASE
-
-
- 
-  i=image(transpose(LONG(data_record[0,*,*])), /current, POSITION=[0,0.76,1,1])                      ; Prints the 4 buffer images
-  i=image(transpose(LONG(data_record[1,*,*])), /current, POSITION=[0,0.515,1,0.75])
-  i=image(transpose(LONG(data_record[2,*,*])), /current, POSITION=[0,0.27,1,0.5])
-  i=image(transpose(LONG(data_record[3,*,*])), /current, POSITION=[0,0.03,1,0.25])
+  
+  i=image(transpose(LONG(data_record[0,*,*])), /current, POSITION=[0,0.76,1,1], RGB_TABLE=39)                      ; Prints the 4 buffer images
+  i=image(transpose(LONG(data_record[1,*,*])), /current, POSITION=[0,0.515,1,0.75], RGB_TABLE=39)
+  i=image(transpose(LONG(data_record[2,*,*])), /current, POSITION=[0,0.27,1,0.5], RGB_TABLE=39)
+  i=image(transpose(LONG(data_record[3,*,*])), /current, POSITION=[0,0.03,1,0.25], RGB_TABLE=39)
 
   
 ;********************************************************************************************************************************
@@ -176,7 +173,13 @@ ENDFOR
 ENDFOR
 ENDIF
  
+ bad_hab_colors=0                                          ; Checks to see if habit colors have been selected to display
+IF (hab_color_option[[hab_colors_widg_id]] EQ 'Habit Colors On') THEN bad_hab_colors=1
+IF (bad_hab_colors) THEN BEGIN
  
+color_key_widg= WIDGET_INFO(color_key_widg,find_by_uname='color_key_button')
+Widget_control, color_key_widg, sensitive=1
  
+ENDIF
  
 END

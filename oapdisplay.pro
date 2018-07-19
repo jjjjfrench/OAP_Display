@@ -1,12 +1,14 @@
 PRO OAPdisplay
 
   RESOLVE_ROUTINE,['oapdisplay_quit_event','OAPdisplay_getfile_event','OAPdisplay_settime_event','OAPdisplay_event',$
-    'OAPdisplay_get2ds_buffers','OAPdisplay_showbuffers','OAPdisplay_step_event','OAPdisplay_save_image'];,'OAPdisplay_color_select']
+    'OAPdisplay_get2ds_buffers','OAPdisplay_showbuffers','OAPdisplay_step_event','OAPdisplay_save_image', $
+    'OAPdisplay_color_key','OAPdisplay_dialog_pickcolor','OAPdisplay_close_colors']
   RESOLVE_ROUTINE, ['oapdisplay_particle_criteria_event','hhmmss2sec'],/IS_FUNCTION
 
   common block1, fileinfo, base_widg, display_info, prbtype, hhmmss, pos, scnt, rec, diam, percentage, nth, hab, hab_selection, timestamp_selection, timestamp_sel, hab_color_option,$ 
-   hab_colors_widg_id, i, auto_reject, touching_edge, time_disp, pos_disp, $
-   spherical_color, graupel_color, aggregate_color, dendrite_color, hexagonal_color, irregular_color, oriented_color, linear_color, centerout_color
+   hab_colors_widg_id, i, auto_reject, touching_edge, time_disp, pos_disp, color_array, color_key_widg, image1, color, Display_button_id, base_widg2, droplist, dendrite_values,$ 
+   irregular_values, hexagonal_values, spherical_values, graupel_values, aggregate_values, oriented_values, centerout_values, linear_values, tiny_values, zero_values
+  
 
   fileinfo = {ncid_base:-999L, ncid_proc:-999L, nparts: 0L, data_varid:0L }
 
@@ -16,7 +18,34 @@ PRO OAPdisplay
     img_stt:'Image Start: hhmmss', img_stp:'Image Stop: hhmmss', img_minD:'Image MinD: 0',  img_maxD:'Image MaxD: 2000', $ 
     first:-999L, last:-999L, buf_full:0L}
 
-  hhmmss=0L & pos=0L & scnt=0L & rec=0L & diam=0L & prbtype =''
+  hhmmss=0L & pos=0L & scnt=0L & rec=0L & diam=0L & image_1=0 & prbtype =''
+
+droplist= LONARR(11)
+color= LONARR(11)
+
+  color[0]=254  ; Dendrite
+  color[1]=215  ; Irregular
+  color[2]=175  ; Hexagonal
+  color[3]=75  ; Spherical
+  color[4]=100  ; Graupel
+  color[5]=50  ; Aggregate
+  color[6]=150  ; Oriented
+  color[7]=27  ; Center-out
+  color[8]=200 ; Linear
+  color[9]=0  ; Tiny
+  color[10]=255  ; Zero
+
+dendrite_values=['red','burnt orange','light green','blue','cyan','dark blue','green','purple','mustard','black','white']
+irregular_values=['burnt orange','red','light green','blue','cyan','dark blue','green','purple','mustard','black','white']
+hexagonal_values=['light green','red','burnt orange','blue','cyan','dark blue','green','purple','mustard','black','white']
+spherical_values=['blue','red','burnt orange','light green','cyan','dark blue','green','purple','mustard','black','white']
+graupel_values=['cyan','red','burnt orange','light green','blue','dark blue','green','purple','mustard','black','white']
+aggregate_values=['dark blue','red','burnt orange','light green','blue','cyan','green','purple','mustard','black','white']
+oriented_values=['green','red','burnt orange','light green','blue','cyan','dark blue','purple','mustard','black','white']
+centerout_values=['purple','red','burnt orange','light green','blue','cyan','dark blue','green','mustard','black','white']
+linear_values=['mustard','red','burnt orange','light green','blue','cyan','dark blue','green','purple','black','white']
+tiny_values=['black','red','burnt orange','light green','blue','cyan','dark blue','green','purple','mustard','white']
+zero_values=['white','Do not alter']
 
 
   widgtit = 'OAP Display'
@@ -64,23 +93,16 @@ PRO OAPdisplay
     xoff=552,/FRAME,ysize=105,uname='hab_widg', event_funct='OAPdisplay_particle_criteria_event',set_value=[1,1,1,1,1,1,1,1,1,1,1])
   Timestamp_widg_id=CW_BGROUP(base_widg,'Timestamps', Column=1,/NONEXCLUSIVE,$
     xoff=995,/FRAME,yoff=105,xsize=80,ysize=25, uname='timestamp_widg', event_funct='OAPdisplay_particle_criteria_event', set_value=1)
+  
   hab_color_options=['Habit Colors Off','Habit Colors On']
- 
- 
- ; display_info.hab_colors_widg_id=WIDGET_DROPLIST(base_widg,value=hab_color_options,uvalue=hab_color_options, $ 
- ;  event_func='OAPdisplay_particle_criteria_event',xoff=403,yoff=101,sensitive=1,uname='hab_colors_widg')
+  display_info.hab_colors_widg_id=WIDGET_DROPLIST(base_widg,value=hab_color_options,uvalue=hab_color_options, $ 
+   event_func='OAPdisplay_particle_criteria_event',xoff=403,yoff=101,sensitive=1,uname='hab_colors_widg')
 
-  ; This button is UNAVAILABLE until I can figure out how to call dialog_colorpicker using a widget button.
-  ; For some reason, using a button to call a procedure that uses dialog_colorpicker causes the output
-  ; value to be 0.
-  ;color_select_widg=WIDGET_BUTTON(base_widg,value='Set Habit Colors',event_pro= 'oapdisplay_color_select' , $
-  ;  xsize=110,ysize=30,xoffset=293,yoffset=104, sensitive=1,uname='color_select_button')
-
-
+  color_key_widg=WIDGET_BUTTON(base_widg,value='Set Habit Colors',event_pro= 'OAPdisplay_color_key' , $
+      xsize=118,ysize=30,xoffset=285,yoffset=104, sensitive=0,uname='color_key_button')
 
   Display_button_id=WIDGET_BUTTON(base_widg,value='Display Particles',event_pro='OAPdisplay_event',$
     xsize=110,ysize=60,xoffset=980,yoffset=10, sensitive=0, uname='Display_button')
-
 
   quit_button=WIDGET_BUTTON(base_widg,value='Quit',event_pro='OAPdisplay_quit_event',$
     xsize=80,ysize=30,xoffset=10,yoffset=70)
@@ -113,11 +135,6 @@ PRO OAPdisplay
   WIDGET_CONTROL, plot_widg_id, GET_VALUE=graphicWin
 
   graphicWin.select
-  
-  
-  
-  ;oapdisplay_color_select ;******************************************************************************************************
-
 
 
 

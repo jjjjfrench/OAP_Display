@@ -2,9 +2,12 @@ PRO OAPdisplay_get2DS_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, las
 
   common block1
   
-  color=0L
-  y_location= FLOAT(0)
-
+  position= make_array(1701,4, VALUE=-999)
+  assigned_color= make_array(1701,4, VALUE=255)
+  x=0
+  color_array= make_array(1700,4, VALUE=255)
+  
+  
   ;Initialize pertinent variables
   display_info.buf_full = 0  ;display buffers are not all full
   TOT_SLICE = 0              ;Number of slices in current buffer (1700 total available)
@@ -47,41 +50,7 @@ PRO OAPdisplay_get2DS_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, las
 
     ;IF WE MAKE IT HERE THE PARTICLE IS GOOD TO DISPLAY
     
- ;   bad_hab_colors=0                                          ; Checks to see if habit colors have been selected to display
-;    IF (hab_color_option[[hab_colors_widg_id]] EQ 'Habit Colors On') THEN bad_hab_colors=1
- ;   IF (bad_hab_colors) THEN BEGIN
     
-   ; CASE HAB[I] OF                       
-   ;   77  : wyo1= [255,255,255]        ;Zero Image 'M'
-   ;   116 : wyo1= [0,0,0]       ;Tiny Image 't'
-   ;   108 : wyo1= [linear_color]        ;Linear Image 'l'
-   ;   67  : wyo1= [centerout_color]         ;Center-out Image 'C'
-   ;   111 : wyo1= [oriented_color]      ;Oriented Image 'o'
-   ;   97  : wyo1= [aggregate_color]      ;Aggregate Image 'a'
-   ;   103 : wyo1= [graupel_color]     ;Graupel Image 'g'
-   ;   115 : wyo1= [spherical_color]        ;Spherical Image 's'
-   ;   104 : wyo1= [hexagonal_color]        ;Hexagonal Image 'h'
-   ;   105 : wyo1= [irregular_color]      ;Irregular Image 'i'
-   ;   100 : wyo1= [dendrite_color]        ;Dendrite Image 'd'
-   ; ENDCASE
-   
-   
-    ;  wyo= tot_slice
-    ;  wyo2= tot_slice + scnt[i]
-    ;  irregular_location = Float(wyo)/1700l              ; Determines the starting slicecount of each particle (only determines the x axis starting point)
-    ;  irregular_location2 = Float(wyo2)/1700l            ; Determines the ending slicecount of each particle (only determines the x axis ending point
-                                                          ; Ideally, we can get rid of this polyline crap if we can find a way to change the color of the
-                                                          ; particles when they are printed so that they are printed as the selected colors, rather
-                                                          ; than simply being printed as black.
-      ;CASE TOT_BUF OF
-      ;  0: y_location= 0.80
-       ; 1: y_location= 0.55
-     ;   2: y_location= 0.30
-      ;  3: y_location= 0.08
-     ; ENDCASE
-      ;wyo_test=POLYLINE([irregular_location, irregular_location2],[y_location, y_location-0.00000000000000000001], COLOR= wyo1, THICK=6, TRANSPARENCY=55)
-   ; ENDIF
-
     
     disp_parts=temporary(disp_parts)+1
     time_disp[TOT_BUF, part_cnt] = hhmmss[i]
@@ -131,6 +100,7 @@ PRO OAPdisplay_get2DS_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, las
   NCDF_VARGET, fileinfo.ncid_base, varid, tmp_data, OFFSET=[0,0,rec[first]],COUNT=[8,1700,rec_cnt]
   tmp = LONARR(4,8,1700)
   FOR k= 0, TOT_BUF DO BEGIN
+    x=0
     arr_pos = 0
     FOR i = stt[k], stp[k] DO BEGIN
       IF (scnt[i] LT 1) THEN CONTINUE
@@ -154,13 +124,112 @@ PRO OAPdisplay_get2DS_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, las
         100 : IF (HAB_SEL[10]) THEN BAD_HABIT=0       ;Dendrite Image 'd'
       ENDCASE
       IF (BAD_HABIT) THEN CONTINUE
+
+
+      bad_hab_colors=0                                          ; Checks to see if habit colors have been selected to display
+      IF (hab_color_option[[hab_colors_widg_id]] EQ 'Habit Colors On') THEN bad_hab_colors=1
+      IF (bad_hab_colors) THEN BEGIN
+
+     ; Attribute a color to each particle type
+      CASE HAB[I] OF
+        77  : wyo1= color[10]        ;Zero Image 'M'
+        116 : wyo1= color[9]       ;Tiny Image 't'
+        108 : wyo1= color[8]        ;Linear Image 'l'
+        67  : wyo1= color[7]         ;Center-out Image 'C'
+        111 : wyo1= color[6]      ;Oriented Image 'o'
+        97  : wyo1= color[5]      ;Aggregate Image 'a'
+        103 : wyo1= color[4]     ;Graupel Image 'g'
+        115 : wyo1= color[3]        ;Spherical Image 's'
+        104 : wyo1= color[2]        ;Hexagonal Image 'h'
+        105 : wyo1= color[1]      ;Irregular Image 'i'
+        100 : wyo1= color[0]        ;Dendrite Image 'd'
+      ENDCASE
+      colors=wyo1
+
+    ENDIF ELSE BEGIN
+    colors= 0
+    ENDELSE
+
+      
+      tmp[k,*,arr_pos:arr_pos+scnt[i]-1] = tmp_data[*,pos[1,i]-scnt[i]+1:pos[1,i],rec[i]-rec[first]]
+      arr_pos = arr_pos+scnt[i] 
       
 
-
-      tmp[k,*,arr_pos:arr_pos+scnt[i]-1] = tmp_data[*,pos[1,i]-scnt[i]+1:pos[1,i],rec[i]-rec[first]]
-      arr_pos = arr_pos+scnt[i]
+      case k of 
+        0:position[x,0]=arr_pos
+        1:position[x,1]=arr_pos
+        2:position[x,2]=arr_pos
+        3:position[x,3]=arr_pos
+      endcase 
+      case k of
+        0:assigned_color[x,0]=colors
+        1:assigned_color[x,1]=colors
+        2:assigned_color[x,2]=colors
+        3:assigned_color[x,3]=colors
+      endcase
+      x=x+1
+      
     ENDFOR
   ENDFOR
   
-  
+ wyotest=where(position[*,0] NE -999)
+ wyotest2=where(assigned_color[*,0] NE 255)
+
+ wyotest_buf2=where(position[*,1] NE -999)
+ wyotest2_buf2=where(assigned_color[*,1] NE 255)
+ 
+ wyotest_buf3=where(position[*,2] NE -999)
+ wyotest2_buf3=where(assigned_color[*,2] NE 255)
+ 
+ wyotest_buf4=where(position[*,3] NE -999)
+ wyotest2_buf4=where(assigned_color[*,3] NE 255)
+ 
+ 
+ ; Assigns a color to each slicecount position in each buffer. The color array contains color 
+ ; values (254,254,254,0,0,75,75,75,75,75,etc...) for all 1700 slices in each buffer and this info gets passed on to showbuffers.
+v=lonarr(1)
+ x=0
+ y=0
+ z=0
+ For x=0, N_ELEMENTS(wyotest)-1 DO BEGIN
+  v[0]=LONG(position[x,0]) 
+  For z= y, v[0] DO BEGIN
+  color_array[z,0]= assigned_color[[wyotest2[x]],0]
+  Endfor
+ y=v[0]
+ ENDFOR
+
+x=0
+y=0
+z=0
+For x=0, N_ELEMENTS(wyotest_buf2)-1 DO BEGIN
+  v[0]=LONG(position[[wyotest_buf2[x]],1])
+  For z= y, v[0] DO BEGIN
+    color_array[z,1]= assigned_color[[wyotest2_buf2[x]],1]
+  Endfor
+  y=v[0] + 1
+ENDFOR
+
+x=0
+y=0
+z=0
+For x=0, N_ELEMENTS(wyotest_buf3)-1 DO BEGIN
+  v[0]=LONG(position[[wyotest_buf3[x]],2])
+  For z= y, v[0] DO BEGIN
+    color_array[z,2]= assigned_color[[wyotest2_buf3[x]],2]
+  Endfor
+  y=v[0]
+ENDFOR
+
+x=0
+y=0
+z=0
+For x=0, N_ELEMENTS(wyotest_buf4)-1 DO BEGIN
+  v[0]=LONG(position[[wyotest_buf4[x]],3])
+  For z= y, v[0] DO BEGIN
+    color_array[z,3]= assigned_color[[wyotest2_buf4[x]],3]
+  Endfor
+  y=v[0]
+ENDFOR
+
 END
