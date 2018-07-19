@@ -13,20 +13,20 @@ testing_window=widget_window(base_widg2)
 widget_control, testing_window, /REALIZE
 
 ; Creates an array of equal size for each habit color
-test= bytarr(20,33)
-test[*,0:2]=color[0]  
-test[*,3:5]=color[1]
-test[*,6:8]=color[2]
-test[*,9:11]=color[3]
-test[*,12:14]=color[4]
-test[*,15:17]=color[5]
-test[*,18:20]=color[6]
-test[*,21:23]=color[7]
-test[*,24:26]=color[8]
-test[*,27:29]=color[9]
-test[*,30:32]=color[10]
+key= bytarr(20,33)
+key[*,0:2]=color[0]  
+key[*,3:5]=color[1]
+key[*,6:8]=color[2]
+key[*,9:11]=color[3]
+key[*,12:14]=color[4]
+key[*,15:17]=color[5]
+key[*,18:20]=color[6]
+key[*,21:23]=color[7]
+key[*,24:26]=color[8]
+key[*,27:29]=color[9]
+key[*,30:32]=color[10]
 
-image1=image(test, WINDOW_TITLE='Habit Color Key', RGB_TABLE=39, scale_factor=1, /current)
+image1=image(key, WINDOW_TITLE='Habit Color Key', RGB_TABLE=39, scale_factor=1, /current)
 image1.scale, 11,11
 
 
@@ -51,7 +51,7 @@ droplist[2]= widget_droplist(base_widg2,value=hexagonal_values,event_pro='OAPdis
 droplist[1]= widget_droplist(base_widg2,value=irregular_values,event_pro='OAPdisplay_dialog_pickcolor',$
   xoff=140,yoff=352,uvalue=irregular_values)        
 droplist[0]= widget_droplist(base_widg2,value=dendrite_values,event_pro='OAPdisplay_dialog_pickcolor',$
-  xoff=140,yoff=385,uvalue=dendrite_values)
+  xoff=140,yoff=386,uvalue=dendrite_values)
 
 done_button=WIDGET_BUTTON(base_widg2,value='DONE',event_pro='OAPdisplay_close_colors',$
   xsize=80,ysize=40,xoffset=200,yoffset=450,sensitive=1)
