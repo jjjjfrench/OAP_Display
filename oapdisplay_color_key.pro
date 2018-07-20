@@ -54,7 +54,7 @@ droplist[0]= widget_droplist(base_widg2,value=dendrite_values,event_pro='OAPdisp
   xoff=140,yoff=386,uvalue=dendrite_values)
 
 done_button=WIDGET_BUTTON(base_widg2,value='DONE',event_pro='OAPdisplay_close_colors',$
-  xsize=80,ysize=40,xoffset=200,yoffset=450,sensitive=1)
+  xsize=80,ysize=40,xoffset=208,yoffset=450,sensitive=1)
 
 t1=TEXT([0.132,0.144,0.105,0.018,0.058,0.025,0.074,0.0465,0.03,0.0415,0.06], $
   [0.825,0.762,0.695,0.63,0.5665,0.501,0.435,0.37,0.303,0.24,0.1737], $
