@@ -298,14 +298,7 @@ case droplist_values9[[droplist_id9]] OF
   'white': tiny_values=['white','red','burnt orange','light green','blue','cyan','dark blue','green','purple','mustard','black']
 endcase
 
-case droplist_values10[[droplist_id10]] OF
-  'white': color[10]=255
-  'Do not alter': color[10]=255
-endcase
-case droplist_values10[[droplist_id10]] OF
-  'white': zero_values=['white','Do not alter']
-  'Do not alter': zero_values=['white', 'Do not alter']
-endcase
+; There is no case statement for the zero habit because it should stay set as white, the default color.
 
  WIDGET_CONTROL,base_widg2,/destroy
  oapdisplay_color_key

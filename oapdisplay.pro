@@ -6,7 +6,7 @@ PRO OAPdisplay
   RESOLVE_ROUTINE, ['oapdisplay_particle_criteria_event','hhmmss2sec'],/IS_FUNCTION
 
   common block1, fileinfo, base_widg, display_info, prbtype, hhmmss, pos, scnt, rec, diam, percentage, nth, hab, hab_selection, timestamp_selection, timestamp_sel, hab_color_option,$ 
-   hab_colors_widg_id, i, auto_reject, touching_edge, time_disp, pos_disp, color_array, color_key_widg, image1, color, Display_button_id, base_widg2, droplist, dendrite_values,$ 
+   hab_colors_widg_id, i, auto_reject, touching_edge, time_disp, pos_disp, color_array, color_key_widg, color, Display_button_id, base_widg2, droplist, dendrite_values,$ 
    irregular_values, hexagonal_values, spherical_values, graupel_values, aggregate_values, oriented_values, centerout_values, linear_values, tiny_values, zero_values
   
 
@@ -18,10 +18,10 @@ PRO OAPdisplay
     img_stt:'Image Start: hhmmss', img_stp:'Image Stop: hhmmss', img_minD:'Image MinD: 0',  img_maxD:'Image MaxD: 2000', $ 
     first:-999L, last:-999L, buf_full:0L}
 
-  hhmmss=0L & pos=0L & scnt=0L & rec=0L & diam=0L & image_1=0 & prbtype =''
+  hhmmss=0L & pos=0L & scnt=0L & rec=0L & diam=0L & prbtype =''
 
-droplist= LONARR(11)
-color= LONARR(11)
+  droplist= LONARR(11)
+  color= LONARR(11)
 
   color[0]=254  ; Dendrite
   color[1]=215  ; Irregular
