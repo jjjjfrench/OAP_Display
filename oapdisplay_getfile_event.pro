@@ -105,6 +105,10 @@ filters2= ['cat.DIMG*.proc.cdf']
   WIDGET_CONTROL, maxD_widg_id, Editable=1
   nth_part_widg_id = WIDGET_INFO(ev.top,find_by_uname='nth_part_widg')
   WIDGET_CONTROL, nth_part_widg_id, Editable=1
+  
+  ; Turn on the 'Set Habit Colors' button once a file has been chosen
+  color_key_widg = WIDGET_INFO(color_key_widg,find_by_uname='color_key_button')
+  WIDGET_CONTROL, color_key_widg, sensitive=1
 
   Display_button_id = WIDGET_INFO(ev.top,find_by_uname='Display_button')
   WIDGET_CONTROL, display_button_id, sensitive=1

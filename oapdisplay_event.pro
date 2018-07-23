@@ -73,8 +73,8 @@ PRO OAPdisplay_event,ev
   WIDGET_CONTROL, get_value=timestamp_sel, Timestamp_widg_id
   
   ;checks to see if habit colors are selected to display
-  ;hab_colors_widg_id = WIDGET_INFO(display_info.hab_colors_widg_id, /Droplist_Select)
-  ;WIDGET_CONTROL, display_info.hab_colors_widg_id, get_uvalue=hab_color_option
+  hab_colors_widg_id = WIDGET_INFO(display_info.hab_colors_widg_id, /Droplist_Select)
+  WIDGET_CONTROL, display_info.hab_colors_widg_id, get_uvalue=hab_color_option
 
 
   ;determine the indices of the particles within the timerange requested and number of particles
