@@ -7,10 +7,9 @@ Function sec2hhmmss, hhmmss
   seconds=(hhmmss-(hours*3600)-(minutes*60))
   hhmmss=(hours*10000)+(minutes*100)+seconds
   Return, hhmmss
+  END
 
-END
-
-;******************************************************************************
+;*****************************************************************************
 
 Function hhmmss2sec, hhmmss
  
@@ -22,5 +21,3 @@ total_sec=(hours*3600)+(minutes*60)+seconds
 hhmmss=total_sec
 Return, hhmmss
 END
-
-
