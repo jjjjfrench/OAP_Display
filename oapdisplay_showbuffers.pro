@@ -76,6 +76,39 @@ common block1
       data_record[*,2:65,2:851]=tmp
 
     END
+    
+    
+    prbtype EQ 'CIPG' : BEGIN
+      data_record=BYTARR(4,64,850)
+      ;convert to binary
+      FOR m=0,3 DO BEGIN
+        FOR k=0,850-1 DO BEGIN
+          FOR j=0,63 DO BEGIN
+              IF (LONG(tmp[m,j,k]) LE 2) THEN $
+                data_record[m,j,k]=color_array[k,m] ELSE data_record[m,j,k]=255
+            data_record[m,j,k] = REVERSE(data_record[m,j,k],2)
+          ENDFOR
+        ENDFOR
+      ENDFOR
+
+      data_record = REFORM(data_record)
+      ;for CIP data, if all diodes are blocked, the cdf file shows everything unblocked....following fixes that
+      FOR m=0,3 DO BEGIN
+        end_buf=1
+        FOR i=850-1,0,-1 DO BEGIN
+          CASE end_buf of
+            0: IF(TOTAL(data_record[m,*,i]) EQ 64 ) THEN data_record[m,*,i]=0
+            1: IF(TOTAL(data_record[m,*,i]) NE 64 ) THEN end_buf=0
+          ENDCASE
+        ENDFOR
+      ENDFOR
+
+      ;the following draws a border around the buffer
+      tmp = data_record
+      data_record=LONARR(4,68,854)
+      data_record[*,2:65,2:851]=tmp
+
+    END
   ENDCASE
   
   i=image(transpose(LONG(data_record[0,*,*])), /current, POSITION=[0,0.76,1,1], RGB_TABLE=39)                      ; Prints the 4 buffer images
@@ -90,6 +123,18 @@ bad_timestamps=0                                          ; Checks to see if tim
 IF (timestamp_sel[0]) THEN bad_timestamps=1
 IF (bad_timestamps) THEN BEGIN
 
+  CASE 1 OF
+    prbtype EQ '2DS' : BEGIN
+      buf_length = 1700L
+    END
+    prbtype EQ 'CIP' : BEGIN
+      buf_length = 850L
+    END
+    prbtype EQ 'CIPG' : BEGIN
+      buf_length = 850L
+    END
+  ENDCASE
+  
 
 For m=0,3 DO BEGIN
   
@@ -142,7 +187,7 @@ IF buffer_time EQ buffer_first_time THEN BEGIN
   buffer_time_part = where(time_disp[m,*] GE buffer_time)
   buffer_part_prior_to_time = buffer_time_part[0]
   buffer_time_slicnt = pos_disp[m, buffer_part_prior_to_time]
-  buffer_location = Float(buffer_time_slicnt)/1700l
+  buffer_location = Float(buffer_time_slicnt)/buf_length
   buffer_timeline=POLYLINE([(buffer_location),(buffer_location - 0.0000000001)],location)
   six_buffer_time = STRTRIM(STRING(buffer_time),2)
   six_buffer_time = '000000' + six_buffer_time
@@ -156,7 +201,7 @@ IF buffer_time LE (buffer_last_time) THEN BEGIN
 buffer_time_part = where(time_disp[m,*] GE buffer_time)
 buffer_part_prior_to_time = buffer_time_part[0]
 buffer_time_slicnt = pos_disp[m, buffer_part_prior_to_time]
-buffer_location = Float(buffer_time_slicnt)/1700l
+buffer_location = Float(buffer_time_slicnt)/buf_length
 buffer_timeline=POLYLINE([(buffer_location),(buffer_location - 0.0000000001)],location)
 six_buffer_time = STRTRIM(STRING(buffer_time),2)
 six_buffer_time = '000000' + six_buffer_time

@@ -23,6 +23,28 @@ PRO OAPdisplay_get2DS_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, las
   part_cnt = 0L
   tot_parts=(0L)
   disp_parts=(0L)
+
+  CASE 1 OF 
+    prbtype EQ '2DS' : BEGIN
+      data_length = 1700
+      data_width = 8
+      tmp_length = 1700
+      tmp_width = 8
+    END
+    prbtype EQ 'CIP' : BEGIN
+      data_length = 1700
+      data_width = 8
+      tmp_length = 850
+      tmp_width = 8      
+    END
+    prbtype EQ 'CIPG' : BEGIN
+      data_length = 512
+      data_width = 64
+      tmp_length = 850
+      tmp_width = 64      
+    END
+  ENDCASE
+    
   
   FOR i = first, last DO BEGIN
     IF (scnt[i] LT 1) THEN CONTINUE           ;particle has no slice count, skip it
@@ -62,8 +84,8 @@ PRO OAPdisplay_get2DS_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, las
     IF (stt[tot_buf] EQ -1) THEN stt[tot_buf] = i   ;if this is the first particle in buffer, set stt
     stp[tot_buf] = i                     ;assume it is last particle in buffer (this will get overwritten on next iteration if it is not)
     ;;;;;;;
-    ;If we have more than 1700 slices, are buffer is full
-    IF (TOT_SLICE GE 1700) THEN BEGIN
+    ;If we have more than tmp_length slices, our buffer is full (this depends on probe type
+    IF (TOT_SLICE GE tmp_length) THEN BEGIN
       stp[tot_buf]=i-1
       time_disp[TOT_BUF, part_cnt] = -999
       pos_disp[TOT_BUF, part_cnt] = -999     
@@ -97,8 +119,8 @@ PRO OAPdisplay_get2DS_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, las
   
   ;get the data and put the good particles in the display buffers
   varid = NCDF_VARID(fileinfo.ncid_base, 'data')
-  NCDF_VARGET, fileinfo.ncid_base, varid, tmp_data, OFFSET=[0,0,rec[first]],COUNT=[8,1700,rec_cnt]
-  tmp = LONARR(4,8,1700)
+  NCDF_VARGET, fileinfo.ncid_base, varid, tmp_data, OFFSET=[0,0,rec[first]],COUNT=[data_width,data_length,rec_cnt]
+  tmp = LONARR(4,tmp_width,tmp_length)
   FOR k= 0, TOT_BUF DO BEGIN
     x=0
     arr_pos = 0
@@ -132,19 +154,19 @@ PRO OAPdisplay_get2DS_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, las
 
      ; Attribute a color to each particle type
       CASE HAB[I] OF
-        77  : wyo1= color[10]        ;Zero Image 'M'
-        116 : wyo1= color[9]       ;Tiny Image 't'
-        108 : wyo1= color[8]        ;Linear Image 'l'
-        67  : wyo1= color[7]         ;Center-out Image 'C'
-        111 : wyo1= color[6]      ;Oriented Image 'o'
-        97  : wyo1= color[5]      ;Aggregate Image 'a'
-        103 : wyo1= color[4]     ;Graupel Image 'g'
-        115 : wyo1= color[3]        ;Spherical Image 's'
-        104 : wyo1= color[2]        ;Hexagonal Image 'h'
-        105 : wyo1= color[1]      ;Irregular Image 'i'
-        100 : wyo1= color[0]        ;Dendrite Image 'd'
+        77  : assign= color[10]        ;Zero Image 'M'
+        116 : assign= color[9]       ;Tiny Image 't'
+        108 : assign= color[8]        ;Linear Image 'l'
+        67  : assign= color[7]         ;Center-out Image 'C'
+        111 : assign= color[6]      ;Oriented Image 'o'
+        97  : assign= color[5]      ;Aggregate Image 'a'
+        103 : assign= color[4]     ;Graupel Image 'g'
+        115 : assign= color[3]        ;Spherical Image 's'
+        104 : assign= color[2]        ;Hexagonal Image 'h'
+        105 : assign= color[1]      ;Irregular Image 'i'
+        100 : assign= color[0]        ;Dendrite Image 'd'
       ENDCASE
-      colors=wyo1
+      colors=assign
 
     ENDIF ELSE BEGIN
     colors= 0
@@ -172,17 +194,17 @@ PRO OAPdisplay_get2DS_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, las
     ENDFOR
   ENDFOR
   
- wyotest=where(position[*,0] NE -999)
- wyotest2=where(assigned_color[*,0] NE 255)
+ where=where(position[*,0] NE -999)
+ where2=where(assigned_color[*,0] NE 255)
 
- wyotest_buf2=where(position[*,1] NE -999)
- wyotest2_buf2=where(assigned_color[*,1] NE 255)
+ where_buf2=where(position[*,1] NE -999)
+ where2_buf2=where(assigned_color[*,1] NE 255)
  
- wyotest_buf3=where(position[*,2] NE -999)
- wyotest2_buf3=where(assigned_color[*,2] NE 255)
+ where_buf3=where(position[*,2] NE -999)
+ where2_buf3=where(assigned_color[*,2] NE 255)
  
- wyotest_buf4=where(position[*,3] NE -999)
- wyotest2_buf4=where(assigned_color[*,3] NE 255)
+ where_buf4=where(position[*,3] NE -999)
+ where2_buf4=where(assigned_color[*,3] NE 255)
  
  
  ; Assigns a color to each slicecount position in each buffer. The color array contains color 
@@ -191,10 +213,10 @@ v=lonarr(1)
  x=0
  y=0
  z=0
- For x=0, N_ELEMENTS(wyotest)-1 DO BEGIN
+ For x=0, N_ELEMENTS(where)-1 DO BEGIN
   v[0]=LONG(position[x,0]) 
   For z= y, v[0] DO BEGIN
-  color_array[z,0]= assigned_color[[wyotest2[x]],0]
+  color_array[z,0]= assigned_color[[where2[x]],0]
   Endfor
  y=v[0]
  ENDFOR
@@ -202,10 +224,10 @@ v=lonarr(1)
 x=0
 y=0
 z=0
-For x=0, N_ELEMENTS(wyotest_buf2)-1 DO BEGIN
-  v[0]=LONG(position[[wyotest_buf2[x]],1])
+For x=0, N_ELEMENTS(where_buf2)-1 DO BEGIN
+  v[0]=LONG(position[[where_buf2[x]],1])
   For z= y, v[0] DO BEGIN
-    color_array[z,1]= assigned_color[[wyotest2_buf2[x]],1]
+    color_array[z,1]= assigned_color[[where2_buf2[x]],1]
   Endfor
   y=v[0] + 1
 ENDFOR
@@ -213,10 +235,10 @@ ENDFOR
 x=0
 y=0
 z=0
-For x=0, N_ELEMENTS(wyotest_buf3)-1 DO BEGIN
-  v[0]=LONG(position[[wyotest_buf3[x]],2])
+For x=0, N_ELEMENTS(where_buf3)-1 DO BEGIN
+  v[0]=LONG(position[[where_buf3[x]],2])
   For z= y, v[0] DO BEGIN
-    color_array[z,2]= assigned_color[[wyotest2_buf3[x]],2]
+    color_array[z,2]= assigned_color[[where2_buf3[x]],2]
   Endfor
   y=v[0]
 ENDFOR
@@ -224,10 +246,10 @@ ENDFOR
 x=0
 y=0
 z=0
-For x=0, N_ELEMENTS(wyotest_buf4)-1 DO BEGIN
-  v[0]=LONG(position[[wyotest_buf4[x]],3])
+For x=0, N_ELEMENTS(where_buf4)-1 DO BEGIN
+  v[0]=LONG(position[[where_buf4[x]],3])
   For z= y, v[0] DO BEGIN
-    color_array[z,3]= assigned_color[[wyotest2_buf4[x]],3]
+    color_array[z,3]= assigned_color[[where2_buf4[x]],3]
   Endfor
   y=v[0]
 ENDFOR
