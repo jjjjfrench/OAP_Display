@@ -84,7 +84,7 @@ PRO OAPdisplay_get2DS_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, las
     IF (stt[tot_buf] EQ -1) THEN stt[tot_buf] = i   ;if this is the first particle in buffer, set stt
     stp[tot_buf] = i                     ;assume it is last particle in buffer (this will get overwritten on next iteration if it is not)
     ;;;;;;;
-    ;If we have more than tmp_length slices, our buffer is full (this depends on probe type
+    ;If we have more than tmp_length slices, our buffer is full (this depends on probe type)
     IF (TOT_SLICE GE tmp_length) THEN BEGIN
       stp[tot_buf]=i-1
       time_disp[TOT_BUF, part_cnt] = -999
