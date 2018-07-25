@@ -1,4 +1,4 @@
-PRO OAPdisplay_get2DS_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, last, direction
+PRO OAPdisplay_get_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, last, direction
 
   common block1
   
