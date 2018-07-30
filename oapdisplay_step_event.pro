@@ -57,7 +57,7 @@ PRO OAPdisplay_step_event,ev
 
 
   ;currently only setup to get 2DS data -- when we add CIP data, we will need to add a CASE statement here
-  OAPdisplay_get2DS_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, last, direction
+  OAPdisplay_get_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, last, direction
 
   OAPdisplay_showbuffers, tmp
 
