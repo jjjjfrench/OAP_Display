@@ -88,7 +88,7 @@ PRO OAPdisplay_event,ev
 
   ;the next procedure gets the data and fills four display buffers
   ;currently only setup to get 2DS data -- when we add CIP data, we will need to add a CASE statement here
-  OAPdisplay_get2DS_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, last
+  OAPdisplay_get_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, last
 
   ;the next procedure unpacks the data in the display buffers and draws the display
   OAPdisplay_showbuffers, tmp

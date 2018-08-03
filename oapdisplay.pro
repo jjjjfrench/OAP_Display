@@ -1,7 +1,7 @@
 PRO OAPdisplay
 
   RESOLVE_ROUTINE,['oapdisplay_quit_event','OAPdisplay_getfile_event','OAPdisplay_settime_event','OAPdisplay_event',$
-    'OAPdisplay_get2ds_buffers','OAPdisplay_showbuffers','OAPdisplay_step_event','OAPdisplay_save_image', $
+    'OAPdisplay_get_buffers','OAPdisplay_showbuffers','OAPdisplay_step_event','OAPdisplay_save_image', $
     'OAPdisplay_color_key','OAPdisplay_dialog_pickcolor','OAPdisplay_close_colors']
   RESOLVE_ROUTINE, ['oapdisplay_particle_criteria_event','hhmmss2sec'],/IS_FUNCTION
 

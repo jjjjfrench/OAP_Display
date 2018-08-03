@@ -2,7 +2,6 @@ PRO OAPdisplay_getfile_event,ev
 
   common block1
 
-
   fbase_widg_id = WIDGET_INFO(ev.top,find_by_uname='fbase_widg')
   fproc_widg_id = WIDGET_INFO(ev.top,find_by_uname='fproc_widg')
   path_widg_id = WIDGET_INFO(ev.top,find_by_uname='path_widg')
@@ -11,7 +10,7 @@ PRO OAPdisplay_getfile_event,ev
   WIDGET_CONTROL, get_value=tmp, path_widg_id
   display_info.path = tmp
 
-filters1= ['DIMG.base*.cdf;DIMG*.CIP.cdf']
+filters1= ['DIMG.base*.cdf;DIMG*.CIP.cdf;DIMG*_cip.cdf']
   fname_b = DIALOG_PICKFILE(FILTER=filters1, PATH=display_info.path, GET_PATH=tmp, $
     TITLE='Choose base netCDF File', /READ, /MUST_EXIST)
   IF (fname_b eq '') THEN BEGIN
@@ -40,11 +39,13 @@ filters2= ['cat.DIMG*.proc.cdf']
   WIDGET_CONTROL,set_value=display_info.path,path_widg_id
   display_info.fname_proc = STRMID(fname_p,STRLEN(display_info.path))
   WIDGET_CONTROL,set_value=display_info.fname_proc,fproc_widg_id
+  
 
   ;using the filename -- check and set the probe type
   IF (STRPOS(fname_p, '2DS') GE 0) THEN  prbtype = '2DS'
   IF (STRPOS(fname_p, 'CIP') GE 0) THEN  prbtype = 'CIP'
-  IF (((STRPOS(fname_p, '2DS')) AND (STRPOS(fname_p, 'CIP'))) LT 0) THEN BEGIN
+  IF (STRPOS(fname_p, 'cip') GE 0) THEN  prbtype = 'CIPG'
+  IF (((STRPOS(fname_p, '2DS')) AND (STRPOS(fname_p, 'CIP')) AND (STRPOS(fname_p, 'cip'))) LT 0) THEN BEGIN
     PRINT, 'Unsupported Probetype'
     RETURN
   ENDIF
@@ -65,6 +66,7 @@ filters2= ['cat.DIMG*.proc.cdf']
   NCDF_VARGET, fileinfo.ncid_proc, varid, scnt
   ENDIF
   IF (prbtype EQ 'CIP') THEN scnt = pos[1,*]-pos[0,*] ; CIP files determine scnt using the difference between the beginning and the end of each particle
+  IF (prbtype EQ 'CIPG') THEN scnt = pos[1,*]-pos[0,*]
   varid = NCDF_VARID(fileinfo.ncid_proc, 'parent_rec_num')
   NCDF_VARGET, fileinfo.ncid_proc, varid, rec
   rec=rec-1 ;idl counts from zero, the files count from 1
