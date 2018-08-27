@@ -30,8 +30,12 @@ PRO OAPdisplay_step_event,ev
   nth = LONG((tmp)[0])
 
   ;get the habits to plot
-  hab_widg_id = WIDGET_INFO(ev.top,find_by_uname='hab_widg')
-  WIDGET_CONTROL, get_value=hab_sel, hab_widg_id
+  habit_widg_id = WIDGET_INFO(ev.top,find_by_uname='habit_widg')
+  WIDGET_CONTROL, get_value=habit_selection, habit_widg_id
+
+  ;check to see if we need to exclude holes
+  holes_widg_id = WIDGET_INFO(ev.top,find_by_uname='holes_widg')
+  WIDGET_CONTROL, get_value=holes_selection, holes_widg_id
 
   inds = WHERE( (hhmmss GE stt_hhmmss) AND (hhmmss LE stp_hhmmss))
   npart = N_ELEMENTS(inds)

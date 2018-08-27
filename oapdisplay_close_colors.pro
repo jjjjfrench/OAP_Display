@@ -4,8 +4,8 @@ PRO OAPdisplay_close_colors, ev
 
   WIDGET_CONTROL,base_widg2,/destroy
 
-  ; Turn the display button back on now that new colors have been set
-  Display_button_id = WIDGET_INFO(display_button_id,find_by_uname='Display_button')
-  WIDGET_CONTROL, display_button_id, sensitive=1
+  ; Turn the base widget back on now that new colors have been set
+  WIDGET_CONTROL, base_widg, sensitive=1
+
 
 END

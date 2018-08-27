@@ -79,6 +79,8 @@ filters2= ['cat.DIMG*.proc.cdf']
   NCDF_VARGET, fileinfo.ncid_proc, varid, auto_reject
   varid = NCDF_VARID(fileinfo.ncid_proc, 'image_touching_edge')
   NCDF_VARGET, fileinfo.ncid_proc, varid, touching_edge
+  varid = NCDF_VARID(fileinfo.ncid_proc, 'max_hole_diameter')
+  NCDF_VARGET, fileinfo.ncid_proc, varid, hole_diam
 
 
   fileinfo.nparts = N_ELEMENTS(hhmmss)
@@ -109,8 +111,8 @@ filters2= ['cat.DIMG*.proc.cdf']
   WIDGET_CONTROL, nth_part_widg_id, Editable=1
   
   ; Turn on the 'Set Habit Colors' button once a file has been chosen
-  color_key_widg = WIDGET_INFO(color_key_widg,find_by_uname='color_key_button')
-  WIDGET_CONTROL, color_key_widg, sensitive=1
+  setcolor_button_id = WIDGET_INFO(ev.top,find_by_uname='setcolor_button')
+  WIDGET_CONTROL, setcolor_button_id, sensitive=1
 
   Display_button_id = WIDGET_INFO(ev.top,find_by_uname='Display_button')
   WIDGET_CONTROL, display_button_id, sensitive=1

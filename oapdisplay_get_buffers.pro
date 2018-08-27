@@ -54,19 +54,27 @@ PRO OAPdisplay_get_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, last, 
     IF (diam[i] LT minD) THEN CONTINUE        ;particle is too small, skip it
     IF (diam[i] GT maxD) THEN CONTINUE        ;particle is too large, skip it
     IF (i mod nth NE 0) THEN CONTINUE         ;if particle index not multiple of nth value, skip it
+    ;holes_selection -- 0 to plot all parts, 1 to not plot holes, 2 to plot only holes
+    skip = 0
+    CASE holes_selection OF
+      0 : skip = 0                                ;we plot all particles, do nothing
+      1 : IF (hole_diam[i] GT 1) THEN skip=1      ;not plot holes & this particle has a hole, skip it
+      2 : IF (hole_diam[i] LT 0.5) THEN skip=1    ;plot only holes & this particle has no hole, skip it      
+    ENDCASE
+    IF (skip) THEN CONTINUE
     bad_habit=1                          ;CHECK IF PARTICLE PARTICLE HABIT IS SELECTED TO DISPLAY
-    CASE HAB[I] OF                       ; if hab_sel is set to display then 'BAD_HABIT' is 0 (False) and we keep the particle
-      77  : IF (HAB_SEL[0]) THEN BAD_HABIT=0        ;Zero Image 'M'
-      116 : IF (HAB_SEL[1]) THEN BAD_HABIT=0        ;Tiny Image 't'
-      108 : IF (HAB_SEL[2]) THEN BAD_HABIT=0        ;Linear Image 'l'
-      67  : IF (HAB_SEL[3]) THEN BAD_HABIT=0        ;Center-out Image 'C'
-      111 : IF (HAB_SEL[4]) THEN BAD_HABIT=0        ;Oriented Image 'o'
-      97  : IF (HAB_SEL[5]) THEN BAD_HABIT=0        ;Aggregate Image 'a'
-      103 : IF (HAB_SEL[6]) THEN BAD_HABIT=0        ;Graupel Image 'g'
-      115 : IF (HAB_SEL[7]) THEN BAD_HABIT=0        ;Sphere Image 's'
-      104 : IF (HAB_SEL[8]) THEN BAD_HABIT=0        ;Hexagonal Image 'h'
-      105 : IF (HAB_SEL[9]) THEN BAD_HABIT=0        ;Irregular Image 'i'
-      100 : IF (HAB_SEL[10]) THEN BAD_HABIT=0       ;Dendrite Image 'd'
+    CASE HAB[I] OF                       ; if habit_selection is set to display then 'BAD_HABIT' is 0 (False) and we keep the particle
+      77  : IF (habit_selection[0]) THEN BAD_HABIT=0        ;Zero Image 'M'
+      116 : IF (habit_selection[1]) THEN BAD_HABIT=0        ;Tiny Image 't'
+      108 : IF (habit_selection[2]) THEN BAD_HABIT=0        ;Linear Image 'l'
+      67  : IF (habit_selection[3]) THEN BAD_HABIT=0        ;Center-out Image 'C'
+      111 : IF (habit_selection[4]) THEN BAD_HABIT=0        ;Oriented Image 'o'
+      97  : IF (habit_selection[5]) THEN BAD_HABIT=0        ;Aggregate Image 'a'
+      103 : IF (habit_selection[6]) THEN BAD_HABIT=0        ;Graupel Image 'g'
+      115 : IF (habit_selection[7]) THEN BAD_HABIT=0        ;Sphere Image 's'
+      104 : IF (habit_selection[8]) THEN BAD_HABIT=0        ;Hexagonal Image 'h'
+      105 : IF (habit_selection[9]) THEN BAD_HABIT=0        ;Irregular Image 'i'
+      100 : IF (habit_selection[10]) THEN BAD_HABIT=0       ;Dendrite Image 'd'
     ENDCASE
     IF (BAD_HABIT) THEN CONTINUE
 
@@ -131,46 +139,50 @@ PRO OAPdisplay_get_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, last, 
       IF (diam[i] LT minD) THEN CONTINUE
       IF (diam[i] GT maxD) THEN CONTINUE
       IF (i mod nth NE 0) THEN CONTINUE
+      ;holes_selection -- 0 to plot all parts, 1 to not plot holes, 2 to plot only holes
+      skip = 0
+      CASE holes_selection OF
+        0 : skip = 0                                ;we plot all particles, do nothing
+        1 : IF (hole_diam[i] GT 1) THEN skip=1      ;not plot holes & this particle has a hole, skip it
+        2 : IF (hole_diam[i] LT 0.5) THEN skip=1    ;plot only holes & this particle has no hole, skip it      
+      ENDCASE
+      IF (skip) THEN CONTINUE
       bad_habit=1                          ;CHECK IF PARTICLE PARTICLE HABIT IS SELECTED TO DISPLAY
       CASE HAB[I] OF                       ; if hab_sel is set to display then 'BAD_HABIT' is 0 (False) and we keep the particle
-        77  : IF (HAB_SEL[0]) THEN BAD_HABIT=0        ;Zero Image 'M'
-        116 : IF (HAB_SEL[1]) THEN BAD_HABIT=0        ;Tiny Image 't'
-        108 : IF (HAB_SEL[2]) THEN BAD_HABIT=0        ;Linear Image 'l'
-        67  : IF (HAB_SEL[3]) THEN BAD_HABIT=0        ;Center-out Image 'C'
-        111 : IF (HAB_SEL[4]) THEN BAD_HABIT=0        ;Oriented Image 'o'
-        97  : IF (HAB_SEL[5]) THEN BAD_HABIT=0        ;Aggregate Image 'a'
-        103 : IF (HAB_SEL[6]) THEN BAD_HABIT=0        ;Graupel Image 'g'
-        115 : IF (HAB_SEL[7]) THEN BAD_HABIT=0        ;Sphere Image 's'
-        104 : IF (HAB_SEL[8]) THEN BAD_HABIT=0        ;Hexagonal Image 'h'
-        105 : IF (HAB_SEL[9]) THEN BAD_HABIT=0        ;Irregular Image 'i'
-        100 : IF (HAB_SEL[10]) THEN BAD_HABIT=0       ;Dendrite Image 'd'
+        77  : IF (habit_selection[0]) THEN BAD_HABIT=0        ;Zero Image 'M'
+        116 : IF (habit_selection[1]) THEN BAD_HABIT=0        ;Tiny Image 't'
+        108 : IF (habit_selection[2]) THEN BAD_HABIT=0        ;Linear Image 'l'
+        67  : IF (habit_selection[3]) THEN BAD_HABIT=0        ;Center-out Image 'C'
+        111 : IF (habit_selection[4]) THEN BAD_HABIT=0        ;Oriented Image 'o'
+        97  : IF (habit_selection[5]) THEN BAD_HABIT=0        ;Aggregate Image 'a'
+        103 : IF (habit_selection[6]) THEN BAD_HABIT=0        ;Graupel Image 'g'
+        115 : IF (habit_selection[7]) THEN BAD_HABIT=0        ;Sphere Image 's'
+        104 : IF (habit_selection[8]) THEN BAD_HABIT=0        ;Hexagonal Image 'h'
+        105 : IF (habit_selection[9]) THEN BAD_HABIT=0        ;Irregular Image 'i'
+        100 : IF (habit_selection[10]) THEN BAD_HABIT=0       ;Dendrite Image 'd'
       ENDCASE
       IF (BAD_HABIT) THEN CONTINUE
 
 
-      bad_hab_colors=0                                          ; Checks to see if habit colors have been selected to display
-      IF (hab_color_option[[hab_colors_widg_id]] EQ 'Habit Colors On') THEN bad_hab_colors=1
-      IF (bad_hab_colors) THEN BEGIN
-
-     ; Attribute a color to each particle type
-      CASE HAB[I] OF
-        77  : assign= color[10]        ;Zero Image 'M'
-        116 : assign= color[9]       ;Tiny Image 't'
-        108 : assign= color[8]        ;Linear Image 'l'
-        67  : assign= color[7]         ;Center-out Image 'C'
-        111 : assign= color[6]      ;Oriented Image 'o'
-        97  : assign= color[5]      ;Aggregate Image 'a'
-        103 : assign= color[4]     ;Graupel Image 'g'
-        115 : assign= color[3]        ;Spherical Image 's'
-        104 : assign= color[2]        ;Hexagonal Image 'h'
-        105 : assign= color[1]      ;Irregular Image 'i'
-        100 : assign= color[0]        ;Dendrite Image 'd'
-      ENDCASE
-      colors=assign
-
-    ENDIF ELSE BEGIN
-    colors= 0
-    ENDELSE
+      IF (color_selection) THEN BEGIN     ;habit colors are turned on
+        ; Attribute a color to each particle type
+        CASE HAB[I] OF
+          77  : assign= color[10]        ;Zero Image 'M'
+          116 : assign= color[9]       ;Tiny Image 't'
+          108 : assign= color[8]        ;Linear Image 'l'
+          67  : assign= color[7]         ;Center-out Image 'C'
+          111 : assign= color[6]      ;Oriented Image 'o'
+          97  : assign= color[5]      ;Aggregate Image 'a'
+          103 : assign= color[4]     ;Graupel Image 'g'
+          115 : assign= color[3]        ;Spherical Image 's'
+          104 : assign= color[2]        ;Hexagonal Image 'h'
+          105 : assign= color[1]      ;Irregular Image 'i'
+          100 : assign= color[0]        ;Dendrite Image 'd'
+        ENDCASE
+        colors=assign
+      ENDIF ELSE BEGIN
+        colors= 0
+      ENDELSE
 
       
       tmp[k,*,arr_pos:arr_pos+scnt[i]-1] = tmp_data[*,pos[1,i]-scnt[i]+1:pos[1,i],rec[i]-rec[first]]

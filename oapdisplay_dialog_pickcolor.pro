@@ -1,4 +1,4 @@
-PRO OAPdisplay_dialog_pickcolor, value
+PRO OAPdisplay_dialog_pickcolor, ev
 
 common block1
 
@@ -300,7 +300,19 @@ endcase
 
 ; There is no case statement for the zero habit because it should stay set as white, the default color.
 
- WIDGET_CONTROL,base_widg2,/destroy
- oapdisplay_color_key
+
+; Rebuild the color display on the color key
+key= bytarr(20,33)
+FOR i=0,10 DO BEGIN
+  key[*,(i*3):(i*3)+2] = color[i]
+ENDFOR
+
+image1=image(key, WINDOW_TITLE='Habit Color Key', RGB_TABLE=39, /current)
+image1.scale, 10,10
+
+
+
+; WIDGET_CONTROL,base_widg2,/destroy
+; oapdisplay_color_key
 
 END
