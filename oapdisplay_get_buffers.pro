@@ -7,6 +7,8 @@ PRO OAPdisplay_get_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, last, 
   x=0
   color_array= make_array(1700,4, VALUE=255)
   
+  bad_PTE=0                                          ; Checks to see if timestamps have been selected to display
+  IF (PTE_sel[0]) THEN bad_PTE=1
   
   ;Initialize pertinent variables
   display_info.buf_full = 0  ;display buffers are not all full
@@ -48,7 +50,9 @@ PRO OAPdisplay_get_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, last, 
   
   FOR i = first, last DO BEGIN
     IF (scnt[i] LT 1) THEN CONTINUE           ;particle has no slice count, skip it
-    IF (touching_edge[i] GT 1) THEN CONTINUE  ;image cannot be touching the edge
+     IF (bad_PTE) THEN BEGIN
+      IF (touching_edge[i] GT 1) THEN CONTINUE  ;image cannot be touching the edge
+     ENDIF
     IF (auto_reject[i] GT 50) THEN CONTINUE   ;auto reject of 48 is accepted, all others are rejected
     tot_parts=temporary(tot_parts)+1
     IF (diam[i] LT minD) THEN CONTINUE        ;particle is too small, skip it
@@ -126,7 +130,9 @@ PRO OAPdisplay_get_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, last, 
     arr_pos = 0
     FOR i = stt[k], stp[k] DO BEGIN
       IF (scnt[i] LT 1) THEN CONTINUE
-      IF (touching_edge[i] GT 1) THEN CONTINUE
+       IF (bad_PTE) THEN BEGIN
+        IF (touching_edge[i] GT 1) THEN CONTINUE  ;image cannot be touching the edge
+       ENDIF
       IF (auto_reject[i] GT 50) THEN CONTINUE  ;auto reject of 48 is accepted, all others are rejected
       IF (diam[i] LT minD) THEN CONTINUE
       IF (diam[i] GT maxD) THEN CONTINUE

@@ -72,6 +72,10 @@ PRO OAPdisplay_event,ev
   Timestamp_widg_id = WIDGET_INFO(ev.top,find_by_uname='timestamp_widg')
   WIDGET_CONTROL, get_value=timestamp_sel, Timestamp_widg_id
   
+  ;checks to see if particles touching the edge are selected to display
+  PTE_widg_id = WIDGET_INFO(ev.top,find_by_uname='PTE_widg')
+  WIDGET_CONTROL, get_value=PTE_sel, PTE_widg_id
+  
   ;checks to see if habit colors are selected to display
   hab_colors_widg_id = WIDGET_INFO(display_info.hab_colors_widg_id, /Droplist_Select)
   WIDGET_CONTROL, display_info.hab_colors_widg_id, get_uvalue=hab_color_option

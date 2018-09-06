@@ -6,7 +6,7 @@ PRO OAPdisplay
   RESOLVE_ROUTINE, ['oapdisplay_particle_criteria_event','hhmmss2sec'],/IS_FUNCTION
 
   common block1, fileinfo, base_widg, display_info, prbtype, hhmmss, pos, scnt, rec, diam, percentage, nth, hab, hab_selection, timestamp_selection, timestamp_sel, hab_color_option,$ 
-   hab_colors_widg_id, i, auto_reject, touching_edge, time_disp, pos_disp, color_array, color_key_widg, color, Display_button_id, base_widg2, droplist, dendrite_values,$ 
+   PTE_sel, hab_colors_widg_id, i, auto_reject, touching_edge, time_disp, pos_disp, color_array, color_key_widg, color, Display_button_id, base_widg2, droplist, dendrite_values,$ 
    irregular_values, hexagonal_values, spherical_values, graupel_values, aggregate_values, oriented_values, centerout_values, linear_values, tiny_values, zero_values
   
 
@@ -93,6 +93,8 @@ zero_values=['white','Do not alter']
     xoff=552,/FRAME,ysize=105,uname='hab_widg', event_funct='OAPdisplay_particle_criteria_event',set_value=[1,1,1,1,1,1,1,1,1,1,1])
   Timestamp_widg_id=CW_BGROUP(base_widg,'Timestamps', Column=1,/NONEXCLUSIVE,$
     xoff=995,/FRAME,yoff=105,xsize=80,ysize=25, uname='timestamp_widg', event_funct='OAPdisplay_particle_criteria_event', set_value=1)
+  PTE_widg_id=CW_BGROUP(base_widg,'Entire-In', Column=1,/NONEXCLUSIVE,$
+    xoff=92,/FRAME,yoff=105,xsize=75,ysize=25, uname='PTE_widg', event_funct='OAPdisplay_particle_criteria_event', set_value=1)
   
   hab_color_options=['Habit Colors Off','Habit Colors On']
   display_info.hab_colors_widg_id=WIDGET_DROPLIST(base_widg,value=hab_color_options,uvalue=hab_color_options, $ 
