@@ -5,15 +5,18 @@ PRO OAPdisplay
     'OAPdisplay_color_key','OAPdisplay_dialog_pickcolor','OAPdisplay_close_colors']
   RESOLVE_ROUTINE, ['oapdisplay_particle_criteria_event','hhmmss2sec'],/IS_FUNCTION
 
-  common block1, fileinfo, base_widg, display_info, prbtype, hhmmss, pos, scnt, rec, diam, percentage, nth, hab, hab_selection, timestamp_selection, timestamp_sel, hab_color_option,$ 
-   PTE_sel, hab_colors_widg_id, i, auto_reject, touching_edge, time_disp, pos_disp, color_array, color_key_widg, color, Display_button_id, base_widg2, droplist, dendrite_values,$ 
-   irregular_values, hexagonal_values, spherical_values, graupel_values, aggregate_values, oriented_values, centerout_values, linear_values, tiny_values, zero_values
+
+  common block1, fileinfo, base_widg, display_info, prbtype, hhmmss, pos, scnt, rec, diam, percentage, nth, hab, i, auto_reject, touching_edge, hole_diam, $
+   habit_selection, timestamp_selection, color_selection, holes_selection, PTE_sel, $ 
+   time_disp, pos_disp, $
+   color_array, color, base_widg2, droplist, $
+   dendrite_values,irregular_values, hexagonal_values, spherical_values, graupel_values, aggregate_values, oriented_values, centerout_values, linear_values, tiny_values, zero_values
   
 
   fileinfo = {ncid_base:-999L, ncid_proc:-999L, nparts: 0L, data_varid:0L }
 
   display_info = {fname_base:'No File Selected', fname_proc:'No File Selected', path:'/kingair_data/snowie17/2DS/', output_path:'/home', $
-    nrec: 'No Records to Show', range_time:'hhmmss -- hhmmss', hab_colors_widg_id:0L,$
+    nrec: 'No Records to Show', range_time:'hhmmss -- hhmmss', $
     image_percent:'% of accepted particles shown: --%', stt_time:'hhmmss', stp_time:'hhmmss', min_size:'0', max_size:'2000', nth_part:'1', $
     img_stt:'Image Start: hhmmss', img_stp:'Image Stop: hhmmss', img_minD:'Image MinD: 0',  img_maxD:'Image MaxD: 2000', $ 
     first:-999L, last:-999L, buf_full:0L}
@@ -56,18 +59,18 @@ zero_values=['white','Do not alter']
   file_button_id=WIDGET_BUTTON(base_widg,value='New File Set',event_pro='OAPdisplay_getfile_event',$
     xsize=80,ysize=60,xoffset=10,yoffset=06, uname='file_button')
   path_label_id=WIDGET_LABEL(base_widg,value='Filepath:',xsize=80,ysize=15,xoff=100,yoff=15,  /ALIGN_RIGHT)
-  path_widg_id=WIDGET_TEXT(base_widg,xsize=58,xoff=180,yoff=10, value=display_info.path,$
+  path_widg_id=WIDGET_TEXT(base_widg,xsize=42,xoff=180,yoff=10, value=display_info.path,$
     uname='path_widg')
   fbase_label_id=WIDGET_LABEL(base_widg,value='Base nc file:',xsize=80,ysize=15,xoff=100,yoff=45,  /ALIGN_RIGHT)
-  fbase_widg_id=WIDGET_TEXT(base_widg,xsize=58,xoff=180,yoff=40,value=display_info.fname_base,$
+  fbase_widg_id=WIDGET_TEXT(base_widg,xsize=42,xoff=180,yoff=40,value=display_info.fname_base,$
     uname='fbase_widg')
   fbase_label_id=WIDGET_LABEL(base_widg,value='Proc nc file:',xsize=80,ysize=15,xoff=100,yoff=75,  /ALIGN_Right)
-  fproc_widg_id=  WIDGET_TEXT(base_widg,xsize=58,xoff=180,yoff=70,value=display_info.fname_proc,$
+  fproc_widg_id=  WIDGET_TEXT(base_widg,xsize=42,xoff=180,yoff=70,value=display_info.fname_proc,$
     uname='fproc_widg')
   save_button_id=WIDGET_BUTTON(base_widg,value='Save Image',event_pro='OAPdisplay_save_image',$
     xsize=80,ysize=30,xoffset=10,yoffset=105, uname='save_button')
 
-  timerange_widg_id=WIDGET_LABEL(base_widg,value=display_info.range_time,xsize=100,ysize=15,xoff=180,yoff=106,  /ALIGN_LEFT, uname='timerange_widg')
+  timerange_widg_id=WIDGET_LABEL(base_widg,value=display_info.range_time,xsize=100,ysize=15,xoff=180,yoff=110,  /ALIGN_LEFT, uname='timerange_widg')
   
 
   sttlabel_widg_id=WIDGET_LABEL(base_widg,value='Start Time',xsize=80,ysize=15,xoff=820,yoff=15, /ALIGN_Right)
@@ -87,21 +90,25 @@ zero_values=['white','Do not alter']
   nth_part_label_id=WIDGET_LABEL(base_widg,value='Every nth',xsize=80,ysize=15,xoff=980,yoff=77, /ALIGN_Right)
   nth_part_widg_id=WIDGET_TEXT(base_widg,value=display_info.nth_part, event_func='OAPdisplay_particle_criteria_event',$
     uname='nth_part_widg',xsize=2,xoff=1060,yoff=71)
-  hab_button_names=['Zero','Tiny','Linear','Center-Out','Oriented','Aggregate','Graupel',$
+  habit_button_names=['Zero','Tiny','Linear','Center-Out','Oriented','Aggregate','Graupel',$
     'Sphere','Hexagonal','Irregular','Dendrite']
-  hab_widg_id=CW_BGROUP(base_widg,hab_button_names,Column=3,/NonExclusive,LABEL_TOP='Habit',$
-    xoff=552,/FRAME,ysize=105,uname='hab_widg', event_funct='OAPdisplay_particle_criteria_event',set_value=[1,1,1,1,1,1,1,1,1,1,1])
-  Timestamp_widg_id=CW_BGROUP(base_widg,'Timestamps', Column=1,/NONEXCLUSIVE,$
-    xoff=995,/FRAME,yoff=105,xsize=80,ysize=25, uname='timestamp_widg', event_funct='OAPdisplay_particle_criteria_event', set_value=1)
+
+  habit_widg_id=CW_BGROUP(base_widg,habit_button_names,Column=3,/NonExclusive,LABEL_TOP='Plot Habit',$
+    xoff=552,/FRAME,ysize=105,uname='habit_widg', event_funct='OAPdisplay_particle_criteria_event',set_value=[1,1,1,1,1,1,1,1,1,1,1])
+  timestamp_widg_id=CW_BGROUP(base_widg,'Timestamps', Column=1, /NONEXCLUSIVE, $
+    xoff=995,yoff=105,xsize=80,ysize=25, uname='timestamp_widg', event_funct='OAPdisplay_particle_criteria_event', set_value=1)
+  holes_button_names=['All Parts','No Holes','Only Holes']
+  holes_widg_id=CW_BGROUP(base_widg,holes_button_names,Column=1, /EXCLUSIVE,LABEL_TOP='Plot Holes',$
+    xoff=460,xsize=80,ysize=75, /FRAME, uname='holes_widg', event_funct='OAPdisplay_particle_criteria_event', set_value=0)
   PTE_widg_id=CW_BGROUP(base_widg,'Entire-In', Column=1,/NONEXCLUSIVE,$
     xoff=92,/FRAME,yoff=105,xsize=75,ysize=25, uname='PTE_widg', event_funct='OAPdisplay_particle_criteria_event', set_value=1)
-  
-  hab_color_options=['Habit Colors Off','Habit Colors On']
-  display_info.hab_colors_widg_id=WIDGET_DROPLIST(base_widg,value=hab_color_options,uvalue=hab_color_options, $ 
-   event_func='OAPdisplay_particle_criteria_event',xoff=403,yoff=101,sensitive=1,uname='hab_colors_widg')
 
-  color_key_widg=WIDGET_BUTTON(base_widg,value='Set Habit Colors',event_pro= 'OAPdisplay_color_key' , $
-      xsize=118,ysize=30,xoffset=285,yoffset=104, sensitive=0,uname='color_key_button')
+  
+  colors_widg_id=CW_BGROUP(base_widg,' Colors', Column=1, /NONEXCLUSIVE, $
+    xoff=465,yoff=105,xsize=80,ysize=25, uname='colors_widg', event_funct='OAPdisplay_particle_criteria_event', set_value=0)
+
+  setcolor_button_id=WIDGET_BUTTON(base_widg,value='Set Colors',event_pro= 'OAPdisplay_color_key' , $
+      ysize=30,xoffset=390,yoffset=105, sensitive=0,uname='setcolor_button')
 
   Display_button_id=WIDGET_BUTTON(base_widg,value='Display Particles',event_pro='OAPdisplay_event',$
     xsize=110,ysize=60,xoffset=980,yoffset=10, sensitive=0, uname='Display_button')

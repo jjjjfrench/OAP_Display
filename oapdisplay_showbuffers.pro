@@ -119,9 +119,8 @@ common block1
   
 ;********************************************************************************************************************************
 
-bad_timestamps=0                                          ; Checks to see if timestamps have been selected to display
-IF (timestamp_sel[0]) THEN bad_timestamps=1
-IF (bad_timestamps) THEN BEGIN
+; Checks to see if timestamps have been selected to display and if so put them in...
+IF (timestamp_selection) THEN BEGIN
 
   CASE 1 OF
     prbtype EQ '2DS' : BEGIN
@@ -218,13 +217,9 @@ ENDFOR
 ENDFOR
 ENDIF
  
- bad_hab_colors=0                                          ; Checks to see if habit colors have been selected to display
-IF (hab_color_option[[hab_colors_widg_id]] EQ 'Habit Colors On') THEN bad_hab_colors=1
-IF (bad_hab_colors) THEN BEGIN
- 
-color_key_widg= WIDGET_INFO(color_key_widg,find_by_uname='color_key_button')
-Widget_control, color_key_widg, sensitive=1
- 
-ENDIF
+;  IF (color_selection) THEN BEGIN     ;habit colors are turned on
+;    color_key_widg= WIDGET_INFO(color_key_widg,find_by_uname='color_key_button')
+;    Widget_control, color_key_widg, sensitive=1
+;  ENDIF
  
 END

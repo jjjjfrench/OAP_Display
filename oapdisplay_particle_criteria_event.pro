@@ -3,9 +3,9 @@ FUNCTION OAPdisplay_particle_criteria_event,ev
   common block1
 
   CASE 1 of
-    (ev.ID EQ (WIDGET_INFO(ev.top,find_by_uname='hab_widg')) ) : BEGIN
+    (ev.ID EQ (WIDGET_INFO(ev.top,find_by_uname='habit_widg')) ) : BEGIN
       WIDGET_CONTROL, get_value=tmp, ev.id
-      hab_selection=tmp
+      habit_selection=tmp
     END
     (ev.ID EQ (WIDGET_INFO(ev.top,find_by_uname='minD_widg')) ) : BEGIN
       WIDGET_CONTROL, get_value=tmp, ev.id
@@ -33,9 +33,13 @@ FUNCTION OAPdisplay_particle_criteria_event,ev
       WIDGET_CONTROL, get_value=tmp, ev.id
       PTE_selection=tmp
     END
-    (ev.ID EQ (WIDGET_INFO(ev.top,find_by_uname='hab_colors_widg')) ) : BEGIN
+    (ev.ID EQ (WIDGET_INFO(ev.top,find_by_uname='colors_widg')) ) : BEGIN
       WIDGET_CONTROL, get_value=tmp, ev.id
-      hab_colors_selection=tmp
+      color_selection=tmp
+    END
+    (ev.ID EQ (WIDGET_INFO(ev.top,find_by_uname='holes_widg')) ) : BEGIN
+      WIDGET_CONTROL, get_value=tmp, ev.id
+      holes_selection=tmp
     END
   ENDCASE
 

@@ -65,20 +65,24 @@ PRO OAPdisplay_event,ev
 
 
   ;get the habits to plot
-  hab_widg_id = WIDGET_INFO(ev.top,find_by_uname='hab_widg')
-  WIDGET_CONTROL, get_value=hab_sel, hab_widg_id
+  habit_widg_id = WIDGET_INFO(ev.top,find_by_uname='habit_widg')
+  WIDGET_CONTROL, get_value=habit_selection, habit_widg_id
   
   ;checks to see if timestamps are selected to display
   Timestamp_widg_id = WIDGET_INFO(ev.top,find_by_uname='timestamp_widg')
-  WIDGET_CONTROL, get_value=timestamp_sel, Timestamp_widg_id
+  WIDGET_CONTROL, get_value=timestamp_selection, Timestamp_widg_id
+
+  ;check to see if we need to exclude holes
+  holes_widg_id = WIDGET_INFO(ev.top,find_by_uname='holes_widg')
+  WIDGET_CONTROL, get_value=holes_selection, holes_widg_id
   
   ;checks to see if particles touching the edge are selected to display
   PTE_widg_id = WIDGET_INFO(ev.top,find_by_uname='PTE_widg')
   WIDGET_CONTROL, get_value=PTE_sel, PTE_widg_id
   
   ;checks to see if habit colors are selected to display
-  hab_colors_widg_id = WIDGET_INFO(display_info.hab_colors_widg_id, /Droplist_Select)
-  WIDGET_CONTROL, display_info.hab_colors_widg_id, get_uvalue=hab_color_option
+  colors_widg_id = WIDGET_INFO(ev.top,find_by_uname='colors_widg')
+  WIDGET_CONTROL, get_value=color_selection, colors_widg_id
 
 
   ;determine the indices of the particles within the timerange requested and number of particles
@@ -149,7 +153,6 @@ PRO OAPdisplay_event,ev
   display_info.first = first
   display_info.last = last
 
-  hab_selection=!Null  ; reset habit selection for next run
   
   
   RETURN
