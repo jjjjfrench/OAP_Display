@@ -5,8 +5,9 @@ PRO OAPdisplay
     'OAPdisplay_color_key','OAPdisplay_dialog_pickcolor','OAPdisplay_close_colors']
   RESOLVE_ROUTINE, ['oapdisplay_particle_criteria_event','hhmmss2sec'],/IS_FUNCTION
 
+
   common block1, fileinfo, base_widg, display_info, prbtype, hhmmss, pos, scnt, rec, diam, percentage, nth, hab, i, auto_reject, touching_edge, hole_diam, $
-   habit_selection, timestamp_selection, color_selection, holes_selection, $ 
+   habit_selection, timestamp_selection, color_selection, holes_selection, PTE_sel, $ 
    time_disp, pos_disp, $
    color_array, color, base_widg2, droplist, $
    dendrite_values,irregular_values, hexagonal_values, spherical_values, graupel_values, aggregate_values, oriented_values, centerout_values, linear_values, tiny_values, zero_values
@@ -91,6 +92,7 @@ zero_values=['white','Do not alter']
     uname='nth_part_widg',xsize=2,xoff=1060,yoff=71)
   habit_button_names=['Zero','Tiny','Linear','Center-Out','Oriented','Aggregate','Graupel',$
     'Sphere','Hexagonal','Irregular','Dendrite']
+
   habit_widg_id=CW_BGROUP(base_widg,habit_button_names,Column=3,/NonExclusive,LABEL_TOP='Plot Habit',$
     xoff=552,/FRAME,ysize=105,uname='habit_widg', event_funct='OAPdisplay_particle_criteria_event',set_value=[1,1,1,1,1,1,1,1,1,1,1])
   timestamp_widg_id=CW_BGROUP(base_widg,'Timestamps', Column=1, /NONEXCLUSIVE, $
@@ -98,6 +100,9 @@ zero_values=['white','Do not alter']
   holes_button_names=['All Parts','No Holes','Only Holes']
   holes_widg_id=CW_BGROUP(base_widg,holes_button_names,Column=1, /EXCLUSIVE,LABEL_TOP='Plot Holes',$
     xoff=460,xsize=80,ysize=75, /FRAME, uname='holes_widg', event_funct='OAPdisplay_particle_criteria_event', set_value=0)
+  PTE_widg_id=CW_BGROUP(base_widg,'Entire-In', Column=1,/NONEXCLUSIVE,$
+    xoff=92,/FRAME,yoff=105,xsize=75,ysize=25, uname='PTE_widg', event_funct='OAPdisplay_particle_criteria_event', set_value=1)
+
   
   colors_widg_id=CW_BGROUP(base_widg,' Colors', Column=1, /NONEXCLUSIVE, $
     xoff=465,yoff=105,xsize=80,ysize=25, uname='colors_widg', event_funct='OAPdisplay_particle_criteria_event', set_value=0)

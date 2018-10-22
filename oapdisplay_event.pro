@@ -76,6 +76,10 @@ PRO OAPdisplay_event,ev
   holes_widg_id = WIDGET_INFO(ev.top,find_by_uname='holes_widg')
   WIDGET_CONTROL, get_value=holes_selection, holes_widg_id
   
+  ;checks to see if particles touching the edge are selected to display
+  PTE_widg_id = WIDGET_INFO(ev.top,find_by_uname='PTE_widg')
+  WIDGET_CONTROL, get_value=PTE_sel, PTE_widg_id
+  
   ;checks to see if habit colors are selected to display
   colors_widg_id = WIDGET_INFO(ev.top,find_by_uname='colors_widg')
   WIDGET_CONTROL, get_value=color_selection, colors_widg_id
