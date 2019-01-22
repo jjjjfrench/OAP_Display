@@ -247,7 +247,7 @@ For x=0, N_ELEMENTS(where_buf2)-1 DO BEGIN
   For z= y, v[0] DO BEGIN
     color_array[z,1]= assigned_color[[where2_buf2[x]],1]
   Endfor
-  y=v[0] + 1
+  y=v[0]
 ENDFOR
 
 x=0
