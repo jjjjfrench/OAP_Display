@@ -27,7 +27,7 @@ common block1
         end_buf=1
         FOR i=1700-1,0,-1 DO BEGIN
           CASE end_buf of
-            0: IF(TOTAL(data_record[m,*,i]) EQ 128 ) THEN data_record[m,*,i]=0
+            0: IF(TOTAL(data_record[m,*,i]) EQ 128 ) THEN data_record[m,*,i]=1
             1: IF(TOTAL(data_record[m,*,i]) NE 128 ) THEN end_buf=0
           ENDCASE
         ENDFOR
@@ -64,7 +64,7 @@ common block1
         end_buf=1
         FOR i=850-1,0,-1 DO BEGIN
           CASE end_buf of
-            0: IF(TOTAL(data_record[m,*,i]) EQ 64 ) THEN data_record[m,*,i]=0
+            0: IF(TOTAL(data_record[m,*,i]) EQ 64 ) THEN data_record[m,*,i]=1
             1: IF(TOTAL(data_record[m,*,i]) NE 64 ) THEN end_buf=0
           ENDCASE
         ENDFOR
@@ -97,7 +97,7 @@ common block1
         end_buf=1
         FOR i=850-1,0,-1 DO BEGIN
           CASE end_buf of
-            0: IF(TOTAL(data_record[m,*,i]) EQ 64 ) THEN data_record[m,*,i]=0
+            0: IF(TOTAL(data_record[m,*,i]) EQ 64 ) THEN data_record[m,*,i]=1
             1: IF(TOTAL(data_record[m,*,i]) NE 64 ) THEN end_buf=0
           ENDCASE
         ENDFOR

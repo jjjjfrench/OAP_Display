@@ -80,6 +80,10 @@ PRO OAPdisplay_event,ev
   PTE_widg_id = WIDGET_INFO(ev.top,find_by_uname='PTE_widg')
   WIDGET_CONTROL, get_value=PTE_sel, PTE_widg_id
   
+  ;checks to see if rejected particles are selected to display
+  reject_widg_id = WIDGET_INFO(ev.top,find_by_uname='reject_widg')
+  WIDGET_CONTROL, get_value=reject_sel, reject_widg_id
+  
   ;checks to see if habit colors are selected to display
   colors_widg_id = WIDGET_INFO(ev.top,find_by_uname='colors_widg')
   WIDGET_CONTROL, get_value=color_selection, colors_widg_id

@@ -33,6 +33,10 @@ FUNCTION OAPdisplay_particle_criteria_event,ev
       WIDGET_CONTROL, get_value=tmp, ev.id
       PTE_selection=tmp
     END
+    (ev.ID EQ (WIDGET_INFO(ev.top,find_by_uname='reject_widg')) ) : BEGIN
+      WIDGET_CONTROL, get_value=tmp, ev.id
+      reject_selection=tmp
+    END
     (ev.ID EQ (WIDGET_INFO(ev.top,find_by_uname='colors_widg')) ) : BEGIN
       WIDGET_CONTROL, get_value=tmp, ev.id
       color_selection=tmp

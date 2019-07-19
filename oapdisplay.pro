@@ -7,7 +7,7 @@ PRO OAPdisplay
 
 
   common block1, fileinfo, base_widg, display_info, prbtype, hhmmss, pos, scnt, rec, diam, percentage, nth, hab, i, auto_reject, touching_edge, hole_diam, $
-   habit_selection, timestamp_selection, color_selection, holes_selection, PTE_sel, $ 
+   habit_selection, timestamp_selection, color_selection, holes_selection, PTE_sel, reject_sel, $ 
    time_disp, pos_disp, $
    color_array, color, base_widg2, droplist, $
    dendrite_values,irregular_values, hexagonal_values, spherical_values, graupel_values, aggregate_values, oriented_values, centerout_values, linear_values, tiny_values, zero_values
@@ -102,6 +102,8 @@ zero_values=['white','Do not alter']
     xoff=460,xsize=80,ysize=75, /FRAME, uname='holes_widg', event_funct='OAPdisplay_particle_criteria_event', set_value=0)
   PTE_widg_id=CW_BGROUP(base_widg,'Entire-In', Column=1,/NONEXCLUSIVE,$
     xoff=92,/FRAME,yoff=105,xsize=75,ysize=25, uname='PTE_widg', event_funct='OAPdisplay_particle_criteria_event', set_value=1)
+  reject_widg_id=CW_BGROUP(base_widg,'Auto-Reject', Column=1,/NONEXCLUSIVE,$
+    xoff=290,/FRAME,yoff=105,xsize=85,ysize=25, uname='reject_widg', event_funct='OAPdisplay_particle_criteria_event', set_value=1)
 
   
   colors_widg_id=CW_BGROUP(base_widg,' Colors', Column=1, /NONEXCLUSIVE, $
