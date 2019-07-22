@@ -45,7 +45,7 @@ PRO OAPdisplay_event,ev
   maxD_widg_id =  WIDGET_INFO(ev.top,find_by_uname='maxD_widg')
   WIDGET_CONTROL, get_value=tmp, maxD_widg_id
   IF (LONG(tmp) LT 1) THEN tmp = STRTRIM( STRING(1),2)
-  IF (LONG(tmp) GT 2000) THEN tmp = STRTRIM( STRING(2000),2)
+  IF (LONG(tmp) GT 5000) THEN tmp = STRTRIM( STRING(2000),2)
   WIDGET_CONTROL, set_value=tmp, maxD_widg_id
   maxD = LONG((tmp)[0]) / 1000. ; change maxD to mm
   IF maxD LE minD Then Begin

@@ -17,8 +17,8 @@ PRO OAPdisplay
 
   display_info = {fname_base:'No File Selected', fname_proc:'No File Selected', path:'/kingair_data/snowie17/2DS/', output_path:'/home', $
     nrec: 'No Records to Show', range_time:'hhmmss -- hhmmss', $
-    image_percent:'% of accepted particles shown: --%', stt_time:'hhmmss', stp_time:'hhmmss', min_size:'0', max_size:'2000', nth_part:'1', $
-    img_stt:'Image Start: hhmmss', img_stp:'Image Stop: hhmmss', img_minD:'Image MinD: 0',  img_maxD:'Image MaxD: 2000', $ 
+    image_percent:'% of accepted particles shown: --%', stt_time:'hhmmss', stp_time:'hhmmss', min_size:'0', max_size:'5000', nth_part:'1', $
+    img_stt:'Image Start: hhmmss', img_stp:'Image Stop: hhmmss', img_minD:'Image MinD: 0',  img_maxD:'Image MaxD: 5000', $ 
     first:-999L, last:-999L, buf_full:0L}
 
   hhmmss=0L & pos=0L & scnt=0L & rec=0L & diam=0L & prbtype =''
