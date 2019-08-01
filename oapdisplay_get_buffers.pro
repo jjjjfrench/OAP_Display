@@ -7,8 +7,11 @@ PRO OAPdisplay_get_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, last, 
   x=0
   color_array= make_array(1700,4, VALUE=255)
   
-  bad_PTE=0                                          ; Checks to see if timestamps have been selected to display
+  bad_PTE=0                                          ; Checks to see if particles touching the edge have been selected to display
   IF (PTE_sel[0]) THEN bad_PTE=1
+  
+  bad_reject=0                                          ; Checks to see if rejected particles have been selected to display
+  IF (reject_sel[0]) THEN bad_reject=1
   
   ;Initialize pertinent variables
   display_info.buf_full = 0  ;display buffers are not all full
@@ -53,7 +56,9 @@ PRO OAPdisplay_get_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, last, 
      IF (bad_PTE) THEN BEGIN
       IF (touching_edge[i] GT 1) THEN CONTINUE  ;image cannot be touching the edge
      ENDIF
-    IF (auto_reject[i] GT 50) THEN CONTINUE   ;auto reject of 48 is accepted, all others are rejected
+     IF (bad_reject) THEN BEGIN
+      IF (auto_reject[i] GT 50) THEN CONTINUE   ;auto reject of 48 is accepted, all others are rejected
+     ENDIF
     tot_parts=temporary(tot_parts)+1
     IF (diam[i] LT minD) THEN CONTINUE        ;particle is too small, skip it
     IF (diam[i] GT maxD) THEN CONTINUE        ;particle is too large, skip it
@@ -141,7 +146,9 @@ PRO OAPdisplay_get_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, last, 
        IF (bad_PTE) THEN BEGIN
         IF (touching_edge[i] GT 1) THEN CONTINUE  ;image cannot be touching the edge
        ENDIF
-      IF (auto_reject[i] GT 50) THEN CONTINUE  ;auto reject of 48 is accepted, all others are rejected
+       IF (bad_reject) THEN BEGIN
+        IF (auto_reject[i] GT 50) THEN CONTINUE   ;auto reject of 48 is accepted, all others are rejected
+       ENDIF
       IF (diam[i] LT minD) THEN CONTINUE
       IF (diam[i] GT maxD) THEN CONTINUE
       IF (i mod nth NE 0) THEN CONTINUE
@@ -212,8 +219,8 @@ PRO OAPdisplay_get_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, last, 
     ENDFOR
   ENDFOR
   
- where=where(position[*,0] NE -999)
- where2=where(assigned_color[*,0] NE 255)
+ where_buf1=where(position[*,0] NE -999)
+ where2_buf1=where(assigned_color[*,0] NE 255)
 
  where_buf2=where(position[*,1] NE -999)
  where2_buf2=where(assigned_color[*,1] NE 255)
@@ -231,10 +238,10 @@ v=lonarr(1)
  x=0
  y=0
  z=0
- For x=0, N_ELEMENTS(where)-1 DO BEGIN
+ For x=0, N_ELEMENTS(where_buf1)-1 DO BEGIN
   v[0]=LONG(position[x,0]) 
   For z= y, v[0] DO BEGIN
-  color_array[z,0]= assigned_color[[where2[x]],0]
+  color_array[z,0]= assigned_color[[where2_buf1[x]],0]
   Endfor
  y=v[0]
  ENDFOR
@@ -247,7 +254,7 @@ For x=0, N_ELEMENTS(where_buf2)-1 DO BEGIN
   For z= y, v[0] DO BEGIN
     color_array[z,1]= assigned_color[[where2_buf2[x]],1]
   Endfor
-  y=v[0] + 1
+  y=v[0]
 ENDFOR
 
 x=0
