@@ -43,9 +43,10 @@ filters2= ['cat.DIMG*.proc.cdf']
 
   ;using the filename -- check and set the probe type
   IF (STRPOS(fname_p, '2DS') GE 0) THEN  prbtype = '2DS'
+  IF (STRPOS(fname_p, 'HVPS') GE 0) THEN  prbtype = '2DS' ;HVPS uses the existing code for the 2DS
   IF (STRPOS(fname_p, 'CIP') GE 0) THEN  prbtype = 'CIP'
   IF (STRPOS(fname_p, 'cip') GE 0) THEN  prbtype = 'CIPG'
-  IF (((STRPOS(fname_p, '2DS')) AND (STRPOS(fname_p, 'CIP')) AND (STRPOS(fname_p, 'cip'))) LT 0) THEN BEGIN
+  IF (((STRPOS(fname_p, '2DS')) AND (STRPOS(fname_p, 'HVPS'))  AND (STRPOS(fname_p, 'CIP')) AND (STRPOS(fname_p, 'cip'))) LT 0) THEN BEGIN
     PRINT, 'Unsupported Probetype'
     RETURN
   ENDIF
