@@ -43,9 +43,10 @@ filters2= ['cat.DIMG*.proc.cdf']
 
   ;using the filename -- check and set the probe type
   IF (STRPOS(fname_p, '2DS') GE 0) THEN  prbtype = '2DS'
+  IF (STRPOS(fname_p, 'HVPS') GE 0) THEN  prbtype = 'HVPS'
   IF (STRPOS(fname_p, 'CIP') GE 0) THEN  prbtype = 'CIP'
   IF (STRPOS(fname_p, 'cip') GE 0) THEN  prbtype = 'CIPG'
-  IF (((STRPOS(fname_p, '2DS')) AND (STRPOS(fname_p, 'CIP')) AND (STRPOS(fname_p, 'cip'))) LT 0) THEN BEGIN
+  IF (((STRPOS(fname_p, '2DS')) AND (STRPOS(fname_p, 'HVPS'))  AND (STRPOS(fname_p, 'CIP')) AND (STRPOS(fname_p, 'cip'))) LT 0) THEN BEGIN
     PRINT, 'Unsupported Probetype'
     RETURN
   ENDIF
@@ -61,7 +62,7 @@ filters2= ['cat.DIMG*.proc.cdf']
   varid = NCDF_VARID(fileinfo.ncid_proc, 'position')
   NCDF_VARGET, fileinfo.ncid_proc, varid, pos
   pos=pos-1
-  IF (prbtype EQ '2DS') THEN BEGIN                         ; Slicecount is read-in normally for the 2DS
+  IF (prbtype EQ '2DS' or prbtype EQ 'HVPS') THEN BEGIN                         ; Slicecount is read-in normally for the SPEC probes
   varid = NCDF_VARID(fileinfo.ncid_proc, 'SliceCount')
   NCDF_VARGET, fileinfo.ncid_proc, varid, scnt
   ENDIF
