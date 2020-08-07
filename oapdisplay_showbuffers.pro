@@ -5,7 +5,7 @@ common block1
   ;The follow statements build the data records based on probe type
   
    CASE 1 of 
-    prbtype EQ '2DS' : BEGIN
+    prbtype EQ '2DS' or prbtype EQ 'HVPS': BEGIN
       data_record = BYTARR(4,128,1700)
       ;convert to binary
       FOR m=0,3 DO BEGIN
@@ -123,7 +123,7 @@ common block1
 IF (timestamp_selection) THEN BEGIN
 
   CASE 1 OF
-    prbtype EQ '2DS' : BEGIN
+    prbtype EQ '2DS' or prbtype EQ 'HVPS': BEGIN
       buf_length = 1700L
     END
     prbtype EQ 'CIP' : BEGIN

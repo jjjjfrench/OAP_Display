@@ -30,7 +30,7 @@ PRO OAPdisplay_get_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, last, 
   disp_parts=(0L)
 
   CASE 1 OF 
-    prbtype EQ '2DS' : BEGIN
+    prbtype EQ '2DS' or prbtype EQ 'HVPS': BEGIN
       data_length = 1700
       data_width = 8
       tmp_length = 1700
