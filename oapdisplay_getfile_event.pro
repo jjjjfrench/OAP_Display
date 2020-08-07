@@ -62,7 +62,7 @@ filters2= ['cat.DIMG*.proc.cdf']
   varid = NCDF_VARID(fileinfo.ncid_proc, 'position')
   NCDF_VARGET, fileinfo.ncid_proc, varid, pos
   pos=pos-1
-  IF (prbtype EQ '2DS' or prbtype EQ 'HVPS') THEN BEGIN                         ; Slicecount is read-in normally for the 2DS
+  IF (prbtype EQ '2DS' or prbtype EQ 'HVPS') THEN BEGIN                         ; Slicecount is read-in normally for the SPEC probes
   varid = NCDF_VARID(fileinfo.ncid_proc, 'SliceCount')
   NCDF_VARGET, fileinfo.ncid_proc, varid, scnt
   ENDIF
