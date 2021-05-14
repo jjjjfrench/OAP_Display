@@ -8,7 +8,7 @@ PRO OAPdisplay
 
   common block1, fileinfo, base_widg, display_info, prbtype, hhmmss, pos, scnt, rec, diam, percentage, nth, hab, i, auto_reject, touching_edge, hole_diam, $
    habit_selection, timestamp_selection, color_selection, holes_selection, PTE_sel, reject_sel, $ 
-   time_disp, pos_disp, $
+   time_disp, pos_disp, accepted_parts, $
    color_array, color, base_widg2, droplist, $
    dendrite_values,irregular_values, hexagonal_values, spherical_values, graupel_values, aggregate_values, oriented_values, centerout_values, linear_values, tiny_values, zero_values
   
@@ -22,6 +22,10 @@ PRO OAPdisplay
     first:-999L, last:-999L, buf_full:0L}
 
   hhmmss=0L & pos=0L & scnt=0L & rec=0L & diam=0L & prbtype =''
+
+  ;values of accepted particles
+  accepted_parts = [48, 104, 72, 117, 82]
+
 
   droplist= LONARR(11)
   color= LONARR(11)

@@ -57,7 +57,7 @@ PRO OAPdisplay_get_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, last, 
       IF (touching_edge[i] GT 1) THEN CONTINUE  ;image cannot be touching the edge
      ENDIF
      IF (bad_reject) THEN BEGIN
-      IF (auto_reject[i] GT 50) THEN CONTINUE   ;auto reject of 48 is accepted, all others are rejected
+       IF ( (TOTAL(auto_reject[i] eq accepted_parts)) LT 0.5) THEN CONTINUE  ;statement returns 0.0 if value of autoreject is not within array of accepted_parts
      ENDIF
     tot_parts=temporary(tot_parts)+1
     IF (diam[i] LT minD) THEN CONTINUE        ;particle is too small, skip it
@@ -147,7 +147,7 @@ PRO OAPdisplay_get_buffers, tmp, minD, maxD, inds, npart, hab_sel, first, last, 
         IF (touching_edge[i] GT 1) THEN CONTINUE  ;image cannot be touching the edge
        ENDIF
        IF (bad_reject) THEN BEGIN
-        IF (auto_reject[i] GT 50) THEN CONTINUE   ;auto reject of 48 is accepted, all others are rejected
+         IF ( (TOTAL(auto_reject[i] eq accepted_parts)) LT 0.5) THEN CONTINUE  ;statement returns 0.0 if value of autoreject is not within array of accepted_parts
        ENDIF
       IF (diam[i] LT minD) THEN CONTINUE
       IF (diam[i] GT maxD) THEN CONTINUE
